@@ -1501,58 +1501,77 @@ int main()
     return 0;
 }*/
 /*// LRU Cache Implementationa
-#include <bits/stdc++.h>
-using namespace std;
-class LRUCache
-{
-    list<int> dq;
-    unordered_map<int, list<int>::iterator> max;
-    int csize;
+//https://www.youtube.com/watch?v=Xc4sICC8m4M&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=77
+class LRUCache {
+  public:
+    class node {
+      public:
+        int key;
+      int val;
+      node * next;
+      node * prev;
+      node(int _key, int _val) {
+        key = _key;
+        val = _val;
+      }
+    };
 
-public:
-    LRUCache(int);
-    void refer(int);
-    void display();
-};
-LRUCache::LRUCache(int n)
-{
-    csize = n;
-}
-void LRUCache::refer(int x)
-{
-    if (max.find(x) == max.end())
-    {
-        if (dq.size() == csize)
-        {
-            int last = dq.back();
-            dq.pop_back();
-            max.erase(last);
-        }
+  node * head = new node(-1, -1);
+  node * tail = new node(-1, -1);
+
+  int cap;
+  unordered_map < int, node * > m;
+
+  LRUCache(int capacity) {
+    cap = capacity;
+    head -> next = tail;
+    tail -> prev = head;
+  }
+
+  void addnode(node * newnode) {
+    node * temp = head -> next;
+    newnode -> next = temp;
+    newnode -> prev = head;
+    head -> next = newnode;
+    temp -> prev = newnode;
+  }
+
+  void deletenode(node * delnode) {
+    node * delprev = delnode -> prev;
+    node * delnext = delnode -> next;
+    delprev -> next = delnext;
+    delnext -> prev = delprev;
+  }
+
+  int get(int key_) {
+    if (m.find(key_) != m.end()) {
+      node * resnode = m[key_];
+      int res = resnode -> val;
+      m.erase(key_);
+      deletenode(resnode);
+      addnode(resnode);
+      m[key_] = head -> next;
+      return res;
     }
-    else
-        dq.erase(max[x]);
-    dq.push_front(x);
-    max[x] = dq.begin();
-}
-void LRUCache::display()
-{
-    for (auto it = dq.begin(); it != dq.end(); it++)
-        cout << (*it) << " ";
-    cout << endl;
-}
-int main()
-{
-    LRUCache ca(4);
 
-    ca.refer(1);
-    ca.refer(2);
-    ca.refer(3);
-    ca.refer(1);
-    ca.refer(4);
-    ca.refer(5);
-    ca.display();
-    return 0;
-}*/
+    return -1;
+  }
+
+  void put(int key_, int value) {
+    if (m.find(key_) != m.end()) {
+      node * existingnode = m[key_];
+      m.erase(key_);
+      deletenode(existingnode);
+    }
+    if (m.size() == cap) {
+      m.erase(tail -> prev -> key);
+      deletenode(tail -> prev);
+    }
+
+    addnode(new node(key_, value));
+    m[key_] = head -> next;
+  }
+};*/
 /*// Reverse a Queue using recursion
 #include <bits/stdc++.h>
 using namespace std;

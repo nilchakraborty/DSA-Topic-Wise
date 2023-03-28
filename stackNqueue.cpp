@@ -2051,22 +2051,18 @@ using namespace std;
 vector<int> maxSlidingWindow(vector<int>& nums, int k) {
     deque<int> q;
     vector<int> result;
-    
     for (int i = 0; i < nums.size(); i++) {
-        // Remove elements that are out of the window
+        // If the deque is not empty and the front element is outside the window (i.e., its index is less than i - k), we remove it from the front of the deque.
         if (!q.empty() && q.front() == i - k) {
             q.pop_front();
         }
-        
-        // Remove elements that are smaller than the current element
+        // Remove elements that are smaller than the current element, We then remove all elements from the back of the deque that are smaller than the current element. This ensures that the maximum element is always at the front of the deque.
         while (!q.empty() && nums[q.back()] < nums[i]) {
             q.pop_back();
         }
-        
         // Add the current element to the deque
         q.push_back(i);
-        
-        // Add the maximum element to the result
+        // If the window is fully formed (i.e., we have processed at least k elements), we add the maximum element (the element at the front of the deque) to the result vector.
         if (i >= k - 1) {
             result.push_back(nums[q.front()]);
         }
@@ -2075,11 +2071,20 @@ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
 }
 int main() {
     vector<int> nums = {1, 3, -1, -3, 5, 3, 6, 7};
-    int k = 3;   
+    int k = 3;
     vector<int> result = maxSlidingWindow(nums, k);
     for (int i = 0; i < result.size(); i++) {
         cout << result[i] << " ";
     }
     cout << endl;
     return 0;
-}*/
+}
+// i	nums[i]	deque	result
+// 0	1	    [0]	
+// 1	3	    [1]	
+// 2	-1	    [1, 2]	    3
+// 3	-3	    [1, 2, 3]	3
+// 4	5	    [4]	        5
+// 5	3	    [4, 5]	    5
+// 6	6	    [6]	        6
+*/

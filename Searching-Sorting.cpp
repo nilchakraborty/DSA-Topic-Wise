@@ -1,4 +1,4 @@
-/*//Find first and last positions of an element in a sorted array   
+/*//Find first and last positions of an element in a sorted array
 #include <bits/stdc++.h>
 using namespace std;
 void firstAndlast(int arr[], int n, int x)
@@ -43,6 +43,28 @@ int main()
     cout << "Fixed point is " << linearSearch(arr, n);
     return 0;
 }*/
+/*// Number of Times a Sorted array is Rotated
+int findMin(vector<int> &nums)
+{
+    int n = nums.size();
+    int start = 0;
+    int end = nums.size() - 1;
+    if (n == 1)
+        return nums[0];
+    while (start <= end)
+    {
+        int mid = start + (end - start) / 2;
+        int prev = (mid + n - 1) % n;
+        int next = (mid + 1) % n;
+        if (nums[mid] < nums[prev] && nums[mid] < nums[next])
+            return nums[mid];
+        else if (nums[end] < nums[mid])
+            start = mid + 1;
+        else
+            end = mid - 1;
+    }
+    return -1;
+}*/
 /*//Search an element in a sorted and rotated array
 #include <bits/stdc++.h>
 using namespace std;
@@ -77,6 +99,63 @@ int main()
         cout << "Key not found";
     return 0;
 }*/
+/*// Searching in a Nearly Sorted Array
+int binarySearch(int arr[], int l, int r, int x)
+{
+    if (r >= l)
+    {
+        int mid = l + (r - l) / 2;
+
+        // If the element is present at
+        // one of the middle 3 positions
+        if (arr[mid] == x)
+            return mid;
+        if (mid > l && arr[mid - 1] == x)
+            return (mid - 1);
+        if (mid < r && arr[mid + 1] == x)
+            return (mid + 1);
+
+        // If element is smaller than mid, then
+        // it can only be present in left subarray
+        if (arr[mid] > x)
+            return binarySearch(arr, l, mid - 2, x); // this time check on mid-2 cz mid-1 is already checked
+
+        // Else the element can only be present
+        // in right subarray
+        return binarySearch(arr, mid + 2, r, x); // this time check on mid+2 cz mid+1 is already checked
+    }
+}*/
+/*//Find position of an element in an Infinite Sorted Array
+int binarySearch(int arr[], int l, int r, int x)
+{
+    if (r>=l)
+    {
+        int mid = l + (r - l)/2;
+        if (arr[mid] == x)
+            return mid;
+        if (arr[mid] > x)
+            return binarySearch(arr, l, mid-1, x);
+        return binarySearch(arr, mid+1, r, x);
+    }
+    return -1;
+}
+int findPos(int arr[], int key)
+{
+    int l = 0, h = 1;
+    int val = arr[0];
+ 
+    // Find h to do binary search
+    while (val < key)
+    {
+        l = h;        // store previous high // set low equals to hign 
+        h = 2*h;      // double high index
+        val = arr[h]; // update new val
+    }
+ 
+    // at this point we have updated low and high indices, Thus use binary search between them
+    return binarySearch(arr, l, h, key);
+}
+*/
 /*//square root of an integer
 #include <bits/stdc++.h>
 using namespace std;
@@ -96,6 +175,46 @@ int main() {
     cout<<floorsqrt(x)<<endl;
     return 0;
 }*/
+/*//Find floor and ceil of an element in a sorted array
+int findFloor(vector<long long> v, long long n, long long x){
+    int start=0;
+    int end=n-1;
+    int res=-1;
+    while (start<=end){
+      int mid= start+(end-start)/2;
+      if (x==v[mid])
+        return mid;
+      else if(x>v[mid])
+        end= mid-1; // continue biniry search on left size of the array
+      else 
+      {
+        res=mid; // store candidate in res and continue BS in right side
+        start=mid+1;
+      }
+    }
+    return res; // at last return greatest element smaller then x
+}
+
+int findCeil(vector<long long> v, long long n, long long x){
+    int start=0;
+    int end=n-1;
+    int res=-1;
+    while (start<=end){
+      int mid= start+(end-start)/2;
+      if (x==v[mid])
+        return mid;
+      else if(x>v[mid])
+        start= mid+1; // continue binary search on right side of the array
+      else 
+      {
+        res=mid; // store candidate in res and continue BS in left side
+        end=mid-1;
+      }
+    }
+    return res; // at last return smallest element greater than x
+}
+//In a sorted array, floor returns the greatest element smaller than or equal to the target element, while ceil returns the smallest element greater than or equal to the target element.
+*/
 /*//Maximum and minimum of an array using minimum number of comparisons
 #include <iostream>
 using namespace std;
@@ -159,14 +278,14 @@ struct line
     int a, b, c;
     line(int a, int b, int c) : a(a), b(b), c(c) {}
 };
-double dist(double x, double y, point p) 
-{ 
-    return sqrt(sq(x - p.x) + sq(y - p.y)); 
-} 
+double dist(double x, double y, point p)
+{
+    return sqrt(sq(x - p.x) + sq(y - p.y));
+}
 double compute(point p[], int n, line l, double X)
 {
     double res = 0;
-      double Y = -1 * (l.c + l.a*X) / l.b; 
+      double Y = -1 * (l.c + l.a*X) / l.b;
     for (int i = 0; i < n; i++)
         res += dist(X, Y, p[i]);
     return res;
@@ -637,64 +756,64 @@ int main()
 using namespace std;
 struct Interval
 {
-	int s;
-	int e;
+    int s;
+    int e;
 };
 bool comp(Interval a, Interval b)
 {
-	return a.s < b.s;
+    return a.s < b.s;
 }
 int kthSmallestNum(vector<Interval> merged, int k)
 {
-	int n = merged.size();
+    int n = merged.size();
 
-	for (int j = 0; j < n; j++)
-	{
-		if (k <= abs(merged[j].e -
-					merged[j].s + 1))
-			return (merged[j].s + k - 1);
+    for (int j = 0; j < n; j++)
+    {
+        if (k <= abs(merged[j].e -
+                    merged[j].s + 1))
+            return (merged[j].s + k - 1);
 
-		k = k - abs(merged[j].e -
-					merged[j].s + 1);
-	}
-	if (k)
-	return -1;
+        k = k - abs(merged[j].e -
+                    merged[j].s + 1);
+    }
+    if (k)
+    return -1;
 }
 void mergeIntervals(vector<Interval> &merged,
-				Interval arr[], int n)
+                Interval arr[], int n)
 {
-	sort(arr, arr + n, comp);
-	merged.push_back(arr[0]);
-	for (int i = 1; i < n; i++)
-	{
-		Interval prev = merged.back();
-		Interval curr = arr[i];
-		if ((curr.s >= prev.s &&
-			curr.s <= prev.e) &&
-			(curr.e > prev.e))
+    sort(arr, arr + n, comp);
+    merged.push_back(arr[0]);
+    for (int i = 1; i < n; i++)
+    {
+        Interval prev = merged.back();
+        Interval curr = arr[i];
+        if ((curr.s >= prev.s &&
+            curr.s <= prev.e) &&
+            (curr.e > prev.e))
 
-		merged.back().e = curr.e;
+        merged.back().e = curr.e;
 
-		else
-		{
-			if (curr.s > prev.e)
-				merged.push_back(curr);
-		}
-	}
+        else
+        {
+            if (curr.s > prev.e)
+                merged.push_back(curr);
+        }
+    }
 }
 int main()
 {
-	Interval arr[] = {{2, 6}, {4, 7}};
-	int n = sizeof(arr)/sizeof(arr[0]);
-	int query[] = {5, 8};
-	int q = sizeof(query)/sizeof(query[0]);
-	vector<Interval>merged;
-	mergeIntervals(merged, arr, n);
+    Interval arr[] = {{2, 6}, {4, 7}};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int query[] = {5, 8};
+    int q = sizeof(query)/sizeof(query[0]);
+    vector<Interval>merged;
+    mergeIntervals(merged, arr, n);
 
-	for (int i = 0; i < q; i++)
-		cout << kthSmallestNum(merged, query[i])
-			<< endl;
-	return 0;
+    for (int i = 0; i < q; i++)
+        cout << kthSmallestNum(merged, query[i])
+            << endl;
+    return 0;
 }*/
 /*//Find pivot element in a sorted array
 Same as 46- Search an element in a sorted and rotated array*/
@@ -728,58 +847,53 @@ int main()
     return 0;
 }*/
 /*//book allocation problem
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
-bool isPossible(int arr[], int n, int m, int curr_min)
-{
-    int studentsRequired = 1;
-    int curr_sum = 0;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] > curr_min)
-            return false;
-        if (curr_sum + arr[i] > curr_min)
-        {
-            studentsRequired++;
-            curr_sum = arr[i];
-            if (studentsRequired > m)
-                return false;
-        }
-        else
-            curr_sum += arr[i];
+//to check if allocation of books among given students is possible.
+int isPossible(vector < int > & A, int pages, int students) {
+  int cnt = 0;
+  int sumAllocated = 0;
+  for (int i = 0; i < A.size(); i++) {
+    if (sumAllocated + A[i] > pages) {
+      cnt++;
+      sumAllocated = A[i];
+      if (sumAllocated > pages) return false;
+    } else {
+      sumAllocated += A[i];
     }
-    return true;
+  }
+  if (cnt < students) return true;
+  return false;
 }
-int findPages(int arr[], int n, int m)
-{
-    long long sum = 0;
-    if (n < m)
-        return -1;
-    for (int i = 0; i < n; i++)
-        sum += arr[i];
-    int start = 0, end = sum;
-    int result = INT_MAX;
-    while (start <= end)
-    {
-        int mid = (start + end) / 2;
-        if (isPossible(arr, n, m, mid))
-        {
-            result = mid;
-            end = mid - 1;
-        }
-        else
-            start = mid + 1;
+int books(vector < int > & A, int B) {
+  if (B > A.size()) return -1;
+  int low = A[0];
+  int high = 0;
+  //to find minimum value and sum of all pages
+  for (int i = 0; i < A.size(); i++) {
+//if their is only 1 student then he will get all the books so high is total sum of all pages
+//if the student size same as the book size then the minimum value will be the minimum value of the book
+//so the search space will be between the minimum value of the book and the total sum of all pages
+    high = high + A[i];
+    low = min(low, A[i]);
+  }
+  //binary search
+  while (low <= high) {
+    int mid = (low + high) >> 1;
+    if (isPossible(A, mid, B)) {
+        //if this returns true then we will try to find the minimum value by defining high as mid-1
+      high = mid - 1;
+    } else {
+      low = mid + 1;
     }
-    return result;
+  }
+  return low;
 }
-int main()
-{
-    int arr[] = {12, 34, 67, 90};
-    int n = sizeof arr / sizeof arr[0];
-    int m = 2;
-    cout << "Minimum number of pages = "
-         << findPages(arr, n, m) << endl;
-    return 0;
+int main() {
+  vector<int> A = {12,34,67,90};
+  int B = 2;
+  cout << "Minimum Possible Number is " << books(A, B);
+  return 0;
 }*/
 /*//Job Scheduling Algo
 #include <iostream>
@@ -787,56 +901,56 @@ int main()
 using namespace std;
 struct Job
 {
-	int start, finish, profit;
+    int start, finish, profit;
 };
 bool myfunction(Job s1, Job s2)
 {
-	return (s1.finish < s2.finish);
+    return (s1.finish < s2.finish);
 }
 int binarySearch(Job jobs[], int index)
 {
-	int lo = 0, hi = index - 1;
-	while (lo <= hi)
-	{
-		int mid = (lo + hi) / 2;
-		if (jobs[mid].finish <= jobs[index].start)
-		{
-			if (jobs[mid + 1].finish <= jobs[index].start)
-				lo = mid + 1;
-			else
-				return mid;
-		}
-		else
-			hi = mid - 1;
-	}
+    int lo = 0, hi = index - 1;
+    while (lo <= hi)
+    {
+        int mid = (lo + hi) / 2;
+        if (jobs[mid].finish <= jobs[index].start)
+        {
+            if (jobs[mid + 1].finish <= jobs[index].start)
+                lo = mid + 1;
+            else
+                return mid;
+        }
+        else
+            hi = mid - 1;
+    }
 
-	return -1;
+    return -1;
 }
 int findMaxProfit(Job arr[], int n)
 {
-	sort(arr, arr+n, myfunction);
-	int *table = new int[n];
-	table[0] = arr[0].profit;
-	for (int i=1; i<n; i++)
-	{
-		int inclProf = arr[i].profit;
-		int l = binarySearch(arr, i);
-		if (l != -1)
-			inclProf += table[l];
-		table[i] = max(inclProf, table[i-1]);
-	}
-	int result = table[n-1];
-	delete[] table;
+    sort(arr, arr+n, myfunction);
+    int *table = new int[n];
+    table[0] = arr[0].profit;
+    for (int i=1; i<n; i++)
+    {
+        int inclProf = arr[i].profit;
+        int l = binarySearch(arr, i);
+        if (l != -1)
+            inclProf += table[l];
+        table[i] = max(inclProf, table[i-1]);
+    }
+    int result = table[n-1];
+    delete[] table;
 
-	return result;
+    return result;
 }
 
 int main()
 {
-	Job arr[] = {{3, 10, 20}, {1, 2, 50}, {6, 19, 100}, {2, 100, 200}};
-	int n = sizeof(arr)/sizeof(arr[0]);
-	cout << "Optimal profit is " << findMaxProfit(arr, n);
-	return 0;
+    Job arr[] = {{3, 10, 20}, {1, 2, 50}, {6, 19, 100}, {2, 100, 200}};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    cout << "Optimal profit is " << findMaxProfit(arr, n);
+    return 0;
 }*/
 /*//Missing Number in AP
 #include <iostream>
@@ -971,7 +1085,7 @@ int main()
         cout << "Yes" << endl;
     }
     else cout << "No" << endl;
-    
+
     return 0;
 }*/
 /*//Findthe inversion count
@@ -1003,87 +1117,87 @@ using namespace std;
 // Second subarray is arr[mid+1..end]
 void merge(int array[], int const left, int const mid, int const right)
 {
-	auto const subArrayOne = mid - left + 1;
-	auto const subArrayTwo = right - mid;
+    auto const subArrayOne = mid - left + 1;
+    auto const subArrayTwo = right - mid;
 
-	// Create temp arrays
-	auto *leftArray = new int[subArrayOne],
-		*rightArray = new int[subArrayTwo];
+    // Create temp arrays
+    auto *leftArray = new int[subArrayOne],
+        *rightArray = new int[subArrayTwo];
 
-	// Copy data to temp arrays leftArray[] and rightArray[]
-	for (auto i = 0; i < subArrayOne; i++)
-		leftArray[i] = array[left + i];
-	for (auto j = 0; j < subArrayTwo; j++)
-		rightArray[j] = array[mid + 1 + j];
+    // Copy data to temp arrays leftArray[] and rightArray[]
+    for (auto i = 0; i < subArrayOne; i++)
+        leftArray[i] = array[left + i];
+    for (auto j = 0; j < subArrayTwo; j++)
+        rightArray[j] = array[mid + 1 + j];
 
-	auto indexOfSubArrayOne = 0, // Initial index of first sub-array
-		indexOfSubArrayTwo = 0; // Initial index of second sub-array
-	int indexOfMergedArray = left; // Initial index of merged array
+    auto indexOfSubArrayOne = 0, // Initial index of first sub-array
+        indexOfSubArrayTwo = 0; // Initial index of second sub-array
+    int indexOfMergedArray = left; // Initial index of merged array
 
-	// Merge the temp arrays back into array[left..right]
-	while (indexOfSubArrayOne < subArrayOne && indexOfSubArrayTwo < subArrayTwo) {
-		if (leftArray[indexOfSubArrayOne] <= rightArray[indexOfSubArrayTwo]) {
-			array[indexOfMergedArray] = leftArray[indexOfSubArrayOne];
-			indexOfSubArrayOne++;
-		}
-		else {
-			array[indexOfMergedArray] = rightArray[indexOfSubArrayTwo];
-			indexOfSubArrayTwo++;
-		}
-		indexOfMergedArray++;
-	}
-	// Copy the remaining elements of
-	// left[], if there are any
-	while (indexOfSubArrayOne < subArrayOne) {
-		array[indexOfMergedArray] = leftArray[indexOfSubArrayOne];
-		indexOfSubArrayOne++;
-		indexOfMergedArray++;
-	}
-	// Copy the remaining elements of
-	// right[], if there are any
-	while (indexOfSubArrayTwo < subArrayTwo) {
-		array[indexOfMergedArray] = rightArray[indexOfSubArrayTwo];
-		indexOfSubArrayTwo++;
-		indexOfMergedArray++;
-	}
+    // Merge the temp arrays back into array[left..right]
+    while (indexOfSubArrayOne < subArrayOne && indexOfSubArrayTwo < subArrayTwo) {
+        if (leftArray[indexOfSubArrayOne] <= rightArray[indexOfSubArrayTwo]) {
+            array[indexOfMergedArray] = leftArray[indexOfSubArrayOne];
+            indexOfSubArrayOne++;
+        }
+        else {
+            array[indexOfMergedArray] = rightArray[indexOfSubArrayTwo];
+            indexOfSubArrayTwo++;
+        }
+        indexOfMergedArray++;
+    }
+    // Copy the remaining elements of
+    // left[], if there are any
+    while (indexOfSubArrayOne < subArrayOne) {
+        array[indexOfMergedArray] = leftArray[indexOfSubArrayOne];
+        indexOfSubArrayOne++;
+        indexOfMergedArray++;
+    }
+    // Copy the remaining elements of
+    // right[], if there are any
+    while (indexOfSubArrayTwo < subArrayTwo) {
+        array[indexOfMergedArray] = rightArray[indexOfSubArrayTwo];
+        indexOfSubArrayTwo++;
+        indexOfMergedArray++;
+    }
 }
 
 // begin is for left index and end is
 // right index of the sub-array
-// of arr to be sorted 
+// of arr to be sorted
 void mergeSort(int array[], int const begin, int const end)
 {
-	if (begin >= end)
-		return; // Returns recursivly
+    if (begin >= end)
+        return; // Returns recursivly
 
-	auto mid = begin + (end - begin) / 2;
-	mergeSort(array, begin, mid);
-	mergeSort(array, mid + 1, end);
-	merge(array, begin, mid, end);
+    auto mid = begin + (end - begin) / 2;
+    mergeSort(array, begin, mid);
+    mergeSort(array, mid + 1, end);
+    merge(array, begin, mid, end);
 }
 
 // UTILITY FUNCTIONS
 // Function to print an array
 void printArray(int A[], int size)
 {
-	for (auto i = 0; i < size; i++)
-		cout << A[i] << " ";
+    for (auto i = 0; i < size; i++)
+        cout << A[i] << " ";
 }
 
 // Driver code
 int main()
 {
-	int arr[] = { 12, 11, 13, 5, 6, 7 };
-	auto arr_size = sizeof(arr) / sizeof(arr[0]);
+    int arr[] = { 12, 11, 13, 5, 6, 7 };
+    auto arr_size = sizeof(arr) / sizeof(arr[0]);
 
-	cout << "Given array is \n";
-	printArray(arr, arr_size);
+    cout << "Given array is \n";
+    printArray(arr, arr_size);
 
-	mergeSort(arr, 0, arr_size - 1);
+    mergeSort(arr, 0, arr_size - 1);
 
-	cout << "\nSorted array is \n";
-	printArray(arr, arr_size);
-	return 0;
+    cout << "\nSorted array is \n";
+    printArray(arr, arr_size);
+    return 0;
 }*/
 /*//Partitioning and Sorting Arrays with Many Repeated Entries
 #include <iostream>

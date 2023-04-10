@@ -1,3 +1,81 @@
+/*// Recursion concept: Base condition, Hypothesis, Induction =>
+// print 1 to n using recursion
+void print(int n){
+    //base condition
+    if(n==1){
+        cout<<n<<" ";
+        return;
+    }
+    //hypothesis
+    print(n - 1);
+    //induction
+    cout << n << " ";
+}
+
+//print n to 1 using recursion
+void print(int n){
+    //base condition
+    if(n==1){
+        cout<<n<<" ";
+        return;
+    }
+    //induction
+    cout << n << " ";
+    //hypothesis
+    print(n - 1);
+}
+*/
+/*// Letter Case Permutation
+vector<string> res;
+void solve(string curr, string s, int i){
+    if (i == s.size()){
+        res.push_back(curr);
+        return;
+    }
+    string c1 = curr;
+    c1.push_back(tolower(s[i]));
+    solve(c1, s, i + 1);
+    string c2 = curr;
+    c2.push_back(toupper(s[i]));
+    solve(c2, s, i + 1);
+}
+vector<string> letterCasePermutation(string s){
+    res.clear();
+    solve("", s, 0);
+    return res;
+}*/
+/*//Generate Parentheses
+vector<string> generateParenthesis(int n) {
+    vector<string> ret;
+    helper(ret, "", n, n);
+    return ret;
+}
+void helper(vector<string> & res, string str, int left, int right){
+    if(left == 0 && right == 0){
+        res.push_back(str);
+        return;
+    }
+    if(left > 0) helper(res, str + "(", left - 1, right);
+    if(right > left) helper(res, str + ")", left, right - 1);
+}*/
+/*//Gane of Death in a circle
+void gameofdeath(int index, vector <int> &v, int &ans, int k){
+    if(v.size() == 1){
+        ans = v[0];
+        return;
+    }
+    index = (index + k) % v.size();
+    v.erase(v.begin() + index);
+    gameofdeath(index, v, ans, k);
+}
+int findTheWinner(int n, int k) {
+    vector <int> v;
+    for(int i = 0; i < n; ++i)
+        v.push_back(i + 1);
+    int ans = 0;
+    gameofdeath(0, v, ans, k-1);
+    return ans;
+}*/
 /*// Rat in a maze Problem
 #include <bits/stdc++.h>
 #define MAX 5
@@ -404,7 +482,7 @@ bool isSubsetSum(int set[], int n, int sum)
         return false;
     if (set[n - 1] > sum)
         return isSubsetSum(set, n - 1, sum);
-    return isSubsetSum(set, n - 1, sum) 
+    return isSubsetSum(set, n - 1, sum)
     || isSubsetSum(set, n - 1, sum - set[n - 1]);
 }
 
@@ -692,7 +770,7 @@ int main()
     ar.push_back(8);
     int n = ar.size();
 
-    int sum = 8; 
+    int sum = 8;
     vector<vector<int>> res = combinationSum(ar, sum);
 
     if (res.size() == 0)

@@ -334,6 +334,17 @@ int main()
     cout << "Middle Element is " << findMiddle(ms) << endl;
     return 0;
 }*/
+/*//Delete Middle Element of a Stack
+void deleteMid(stack<char>& s, int sizeOfStack, int current = 0) {
+    if (current == sizeOfStack / 2) {
+        s.pop();
+        return;
+    }
+    char x = s.top();
+    s.pop();
+    deleteMid(s, sizeOfStack, current + 1);
+    s.push(x);
+}*/
 /*// Implement "N" stacks in an Array
 #include <bits/stdc++.h>
 using namespace std;
@@ -539,20 +550,19 @@ class Solution {
   public:
     vector < int > nextGreaterElements(vector < int > & nums) {
       int n = nums.size();
-      vector < int > nge(n, -1);
+      vector < int > nge(n, -1);// initialize vector with -1
       stack < int > st;
       //2n for circular array , use n for non circular array
       for (int i = 2 * n - 1; i >= 0; i--) {
-        while (!st.empty() && st.top() <= nums[i % n]) {
-          st.pop();
+        while (!st.empty() && st.top() <= nums[i % n]) { //i%n for circular and i for non circular
+          st.pop(); // remove all elements from stack smaller than the current element
         }
-
-        if (i < n) {
-          if (!st.empty()) nge[i] = st.top();
+        if (i < n && !st.empty()) { // check if a greater element exists in the stack
+          nge[i] = st.top();
         }
-        st.push(nums[i % n]);
+        st.push(nums[i % n]); // add the current element to the stack. This ensures that the next greater element for this element is found in the future iterations of the loop.
       }
-      return nge;
+      return nge; // return the result vector
     }
 };
 int main() {
@@ -563,6 +573,22 @@ int main() {
   for (int i = 0; i < res.size(); i++) {
     cout << res[i] << " ";
   }
+}*/
+/*//Find the next smaller element
+vector<int> nextSmallerElements(vector<int>& nums) {
+  int n = nums.size();
+  vector<int> nse(n, -1); // initialize vector with -1
+  stack<int> st;
+  for (int i = 2 * n - 1; i >= 0; i--) {
+    while (!st.empty() && st.top() >= nums[i % n]) {
+      st.pop(); // remove all elements from stack smaller than the current element
+    }
+    if (i < n && !st.empty()) { // check if a greater element exists in the stack
+      nge[i] = st.top();
+    }
+    st.push(nums[i % n]); // add the current element to the stack
+  }
+  return nge; // return the result vector
 }*/
 /*// The celebrity Problem
 #include <bits/stdc++.h>

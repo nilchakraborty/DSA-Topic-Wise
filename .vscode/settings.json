@@ -9,5 +9,6 @@
         "forward_list": "cpp",
         "list": "cpp",
         "valarray": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

@@ -23,7 +23,31 @@ int main()
 {
 	Sieve(500);
 	return 0;
-}*/
+}
+Time Complexity: O(n log log n)
+Space Complexity: O(n)*/
+/*// Prime Factorization using Sieve
+void primefactor( (int n) {
+	int spf[n + 1] = {0};
+	for (int i = 2; i <= n; i++){
+		spf[i] = i;
+	}
+	for (int i = 2; i <= n; i++){
+		if (spf[i] == i){
+			for (int j = i * i; j <= n; j += i){
+				if (spf[j] == j){
+					spf[j] = i;
+				}
+			}
+		}
+	}
+	while (n != 1){
+		cout << spf[n] << "";
+		n = n / spf[n];
+	}
+}
+Time Complexity for factorization: O(log n)
+Space Complexity: O(n)*/
 /*// Disjoint Set
 //(to find the number of connected components in a graph)
 //time complexity O(4*alpha) == O(4)
@@ -31,7 +55,6 @@ int main()
 using namespace std;
 class DisjSet {
 	int *rank, *parent, n;
-
 public:
 	DisjSet(int n)
 	{
@@ -40,14 +63,12 @@ public:
 		this->n = n;
 		makeSet();
 	}
-
 	void makeSet()
 	{
 		for (int i = 0; i < n; i++) {
 			parent[i] = i;
 		}
 	}
-
 	int find(int x)
 	{
 		if (parent[x] != x) {
@@ -55,15 +76,12 @@ public:
 		}
 		return parent[x];
 	}
-
 	void Union(int x, int y)
 	{
 		int xset = find(x);
 		int yset = find(y);
-
 		if (xset == yset)
 			return;
-
 		if (rank[xset] < rank[yset]) {
 			parent[xset] = yset;
 		}
@@ -76,7 +94,6 @@ public:
 		}
 	}
 };
-
 int main()
 {
 	DisjSet obj(5);
@@ -91,7 +108,6 @@ int main()
 		cout << "Yes\n";
 	else
 		cout << "No\n";
-
 	return 0;
 }*/
 /*// Segment tree
@@ -102,9 +118,7 @@ using namespace std;
 #define int long long
 #define endl "\n"
 const int N = 1e5 + 2, MOD = 1e9 + 7;
-
 int tree[4 * N], a[N];
-
 void build(int node, int st, int en)
 {
 	if (st == en)
@@ -115,27 +129,21 @@ void build(int node, int st, int en)
 	int mid = (st + en) / 2;
 	build(2 * node, st, mid);
 	build(2 * node + 1, mid + 1, en);
-
 	tree[node] = max(tree[2 * node], tree[2 * node + 1]);
 }
-
 int query(int node, int st, int en, int l, int r)
 {
 	if (en < l || st > r)
 	{
 		return INT_MIN;
 	}
-
 	if (l <= st && en <= r)
 		return tree[node];
-
 	int mid = (st + en) / 2;
 	int q1 = query(2 * node, st, mid, l, r);
 	int q2 = query(2 * node + 1, mid + 1, en, l, r);
-
 	return max(q1, q2);
 }
-
 void update(int node, int st, int en, int idx, int val)
 {
 	if (st == en)
@@ -144,7 +152,6 @@ void update(int node, int st, int en, int idx, int val)
 		tree[node] = val;
 		return;
 	}
-
 	int mid = (st + en) / 2;
 	if (idx <= mid)
 	{
@@ -154,21 +161,17 @@ void update(int node, int st, int en, int idx, int val)
 	{
 		update(2 * node + 1, mid + 1, en, idx, val);
 	}
-
 	tree[node] = max(tree[2 * node], tree[2 * node + 1]);
 }
-
 signed main()
 {
 	int n;
 	cin >> n;
-
 	for (int i = 0; i < n; i++)
 	{
 		cin >> a[i];
 	}
 	build(1, 0, n - 1);
-
 	while (1)
 	{
 		int type;
@@ -249,7 +252,6 @@ int32_t main()
 			update(index, val);
 		}
 	}
-
 	return 0;
 }*/
 /*// Square Root Decomposition
@@ -296,13 +298,11 @@ using namespace std;
 #define int long long
 const int N = 1e5 + 2, MOD = 1e9 + 7;
 int rootN = sqrtl(N);
-
 struct Q
 {
 	int idx, l, r;
 };
 Q q[N];
-
 bool compare(Q a, Q b)
 {
 	if (a.l / rootN == b.l / rootN)
@@ -334,7 +334,6 @@ int32_t main()
 	{
 		l=q[i].l;r=q[i].r;
 		l--;r--;
-
 		while(curr_r<r){
 			curr_r++;
 			curr_ans+=a[curr_r];
@@ -377,7 +376,6 @@ void init(vector<int> &vec, int node, int left, int right)
 	init(vec, node << 1 | 1, ((left + right) >> 1) + 1, right);
 	seg[node] = func(seg[node << 1], seg[node << 1 | 1]);
 }
-
 void busy(int node, int left, int right)
 {
 	if (!lazy[node])
@@ -390,7 +388,6 @@ void busy(int node, int left, int right)
 	}
 	lazy[node] = 0;
 }
-
 void update(int node, int left, int right, int start, int end, int diff)
 {
 	busy(node, left, right);
@@ -406,7 +403,6 @@ void update(int node, int left, int right, int start, int end, int diff)
 	update(node << 1 | 1, ((left + right) >> 1) + 1, right, start, end, diff);
 	seg[node] = func(seg[node << 1], seg[node << 1 | 1]);
 }
-
 int query(int node, int left, int right, int start, int end)
 {
 	busy(node, left, right);
@@ -419,7 +415,6 @@ int query(int node, int left, int right, int start, int end)
 		return query(node << 1, left, mid, start, end);
 	return func(query(node << 1, left, mid, start, end), query(node << 1 | 1, mid + 1, right, start, end));
 }
-
 int main()
 {
 	int size = 4;

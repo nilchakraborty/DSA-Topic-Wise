@@ -158,6 +158,17 @@ int main()
     reverseLevelOrder(root);
     return 0;
 }*/
+/*// Print Root to Node path
+bool getPath(node * root, vector < int > & arr, int x) {
+  if (!root)    return false;
+  arr.push_back(root -> data);
+  if (root -> data == x)    return true;
+// if x is found in left or right subtree, return true
+  if (getPath(root -> left, arr, x) || getPath(root -> right, arr, x))
+    return true;  
+  arr.pop_back();
+  return false;
+}*/
 /*// Vertical order traversal
 #include <bits/stdc++.h>
 
@@ -169,8 +180,8 @@ struct node {
 };
 
 vector < vector < int >> findVertical(node * root) {
-  map < int, map < int, multiset < int >>> nodes;
-  queue < pair < node * , pair < int, int >>> todo;
+  map < int, map < int, multiset < int >>> nodes; // first int for vertical, second int for level, multiset for sorted order
+  queue < pair < node * , pair < int, int >>> todo; // node for root, pair for vertical and level
   todo.push({root,{0, 0}});
   //initial vertical and level
   while (!todo.empty()) {
@@ -243,18 +254,8 @@ class node
     node* left;
     node* right;
 };
-int maxDepth(node* node)
-{
-    if (node == NULL)
-        return 0;
-    else
-    {
-        int lDepth = maxDepth(node->left);
-        int rDepth = maxDepth(node->right);
-        if (lDepth > rDepth)
-            return(lDepth + 1);
-        else return(rDepth + 1);
-    }
+int maxDepth(node* node){
+    return node ? 1 + max(maxDepth(node->left), maxDepth(node->right)) : 0;
 }
 node* newNode(int data)
 {
@@ -278,52 +279,29 @@ int main()
     return 0;
 }*/
 /*// Diameter of a tree
-#include <bits/stdc++.h>
-using namespace std;
-struct node
-{
-    int data;
-    struct node *left, *right;
-};
-struct node *newNode(int data);
-int max(int a, int b) { return (a > b) ? a : b; }
-int height(struct node *node);
-int diameter(struct node *tree)
-{
-    if (tree == NULL)
-        return 0;
+// time complexity = O(n^2) 
+int height(Node *node)
+{return node == NULL? 0 : 1 + max(height(node->left), height(node->right));}
+int diameter(Node *tree){
+    if (tree == NULL) return 0;
+// firstly calculate left and right height and diameter
     int lheight = height(tree->left);
     int rheight = height(tree->right);
     int ldiameter = diameter(tree->left);
     int rdiameter = diameter(tree->right);
     return max(lheight + rheight + 1, max(ldiameter, rdiameter));
 }
-int height(struct node *node)
-{
-    if (node == NULL)
+// time complexity = O(n)
+int diameter(Node* root,int* height) {
+    if(root == NULL) {
+        *height = 0;
         return 0;
-    return 1 + max(height(node->left), height(node->right));
-}
-struct node *newNode(int data)
-{
-    struct node *node = (struct node *)malloc(sizeof(struct node));
-    node->data = data;
-    node->left = NULL;
-    node->right = NULL;
-
-    return (node);
-}
-int main()
-{
-    struct node *root = newNode(1);
-    root->left = newNode(2);
-    root->right = newNode(3);
-    root->left->left = newNode(4);
-    root->left->right = newNode(5);
-
-    cout << "Diameter of the given binary tree is " << diameter(root);
-
-    return 0;
+    }
+    int lh = 0, rh = 0;
+    int ldiameter = diameter(root->left, &lh);
+    int rdiameter = diameter(root->right, &rh);
+    *height = max(lh, rh) + 1;
+    return max(lh + rh + 1, max(ldiameter, rdiameter));
 }*/
 /*// Mirror of a tree
 #include <bits/stdc++.h>
@@ -384,9 +362,7 @@ int main()
 
     return 0;
 }*/
-/*// Inorder Traversal of a tree both using recursion and Iteration
-// Preorder Traversal of a tree both using recursion and Iteration
-// Postorder Traversal of a tree both using recursion and Iteration
+/*// Inorder, Preorder, Postorder Traversal of a tree both using recursion
 #include <bits/stdc++.h>
 using namespace std;
 struct Node
@@ -442,139 +418,100 @@ int main()
 
     return 0;
 }*/
+/*// Inorder, Preorder, Postorder Traversal of a tree both using iteration
+vector<int> preInPostTraversal(TreeNode* root){
+    stack<pair<TreeNode*, int>> st;
+    st.push({root, 1});
+    vector<int> pre, in, post;
+    if(root == NULL) return;
+    while(!st.empty()) {
+        auto it = st.top();
+        st.pop();
+// this is pre order part, increment the count and push the left node
+        if(it.second == 1) {
+            pre.push_back(it.first->val);
+            it.second++;
+            st.push(it);
+            if(it.first->left != NULL) {
+                st.push({it.first->left, 1});
+            }
+        }
+// this is in order part, increment the count and push the right node
+        else if(it.second == 2) {
+            in.push_back(it.first->val);
+            it.second++;
+            st.push(it);
+            if(it.first->right != NULL) {
+                st.push({it.first->right, 1});
+            }
+        }
+        else {
+            post.push_back(it.first->val);
+        }
+    }
+}*/
 /*// Left View of a tree
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Node
-{
-    int data;
-    struct Node *left, *right;
-};
-struct Node *newNode(int item)
-{
-    struct Node *temp = (struct Node *)malloc(
-        sizeof(struct Node));
-    temp->data = item;
-    temp->left = temp->right = NULL;
-    return temp;
-}
-void leftViewUtil(struct Node *root,
-                  int level, int *max_level)
-{
-    if (root == NULL)
-        return;
-    if (*max_level < level)
-    {
-        cout << root->data << " ";
-        *max_level = level;
+class Solution {
+public:
+    void recursion(TreeNode *root, int level, vector<int> &res){
+        if(root==NULL) return ;
+//If vector size is equal to the level then push_back its node value to the vector data structure.
+        if(res.size()==level) res.push_back(root->val); 
+        recursion(root->left, level+1, res);
+        recursion(root->right, level+1, res);
     }
-    leftViewUtil(root->left, level + 1, max_level);
-    leftViewUtil(root->right, level + 1, max_level);
-}
-void leftView(struct Node *root)
-{
-    int max_level = 0;
-    leftViewUtil(root, 1, &max_level);
-}
-int main()
-{
-    Node *root = newNode(10);
-    root->left = newNode(2);
-    root->right = newNode(3);
-    root->left->left = newNode(7);
-    root->left->right = newNode(8);
-    root->right->right = newNode(15);
-    root->right->left = newNode(12);
-    root->right->right->left = newNode(14);
-
-    leftView(root);
-
-    return 0;
-}*/
+    vector<int> leftSideView(TreeNode *root) {
+        vector<int> res;
+        recursion(root, 0, res);
+        return res;
+    }
+};*/
 /*// Right View of Tree
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Node
-{
-    int data;
-    struct Node *left, *right;
-};
-struct Node *newNode(int item)
-{
-    struct Node *temp = (struct Node *)malloc(
-        sizeof(struct Node));
-    temp->data = item;
-    temp->left = temp->right = NULL;
-    return temp;
-}
-void rightViewUtil(struct Node *root,
-                   int level, int *max_level)
-{
-    if (root == NULL)
-        return;
-    if (*max_level < level)
-    {
-        cout << root->data << " ";
-        *max_level = level;
+class Solution {
+public:
+    void recursion(TreeNode *root, int level, vector<int> &res){
+        if(root==NULL) return ;
+// If vector size is equal to the level then push_back its node value to the vector data structure.
+        if(res.size()==level) res.push_back(root->val);
+        recursion(root->right, level+1, res);
+        recursion(root->left, level+1, res);
     }
-    rightViewUtil(root->right, level + 1, max_level);
-    rightViewUtil(root->left, level + 1, max_level);
-}
-void rightView(struct Node *root)
-{
-    int max_level = 0;
-    rightViewUtil(root, 1, &max_level);
-}
-int main()
-{
-    Node *root = newNode(10);
-    root->left = newNode(2);
-    root->right = newNode(3);
-    root->left->left = newNode(7);
-    root->left->right = newNode(8);
-    root->right->right = newNode(15);
-    root->right->left = newNode(12);
-    root->right->right->left = newNode(14);
-
-    rightView(root);
-
-    return 0;
-}*/
+    vector<int> rightSideView(TreeNode *root) {
+        vector<int> res;
+        recursion(root, 0, res);
+        return res;
+    }
+};*/
 /*// Top View of a tree
-// class Solution
-// {
-//     public:
-//     vector<int> topView(Node *root)
-//     {
-//         vector<int> ans;
-//         if(root == NULL) return ans;
-//         map<int,int> mpp;
-//         queue<pair<Node*, int>> q;
-//         q.push({root, 0});
-//         while(!q.empty()) {
-//             auto it = q.front();
-//             q.pop();
-//             Node* node = it.first;
-//             int line = it.second;
-//             if(mpp.find(line) == mpp.end()) mpp[line] = node->data;
-
-//             if(node->left != NULL) {
-//                 q.push({node->left, line-1});
-//             }
-//             if(node->right != NULL) {
-//                 q.push({node->right, line + 1});
-//             }
-
-//         }
-
-//         for(auto it : mpp) {
-//             ans.push_back(it.second);
-//         }
-//         return ans;
-//     }
-// };
+class Solution{
+    public:
+    vector<int> topView(Node *root){
+        vector<int> ans;
+        if(root == NULL) return ans;
+        map<int,int> mpp; // first int for line and second int for node data
+        queue<pair<Node*, int>> q; // first node* for root and second int for line
+        q.push({root, 0});
+        while(!q.empty()) {
+            auto it = q.front();
+            q.pop();
+            Node* node = it.first;
+            int line = it.second;
+// when a new line is encountered (mpp.find(line) == mpp.end()), the node's data is stored in the map. This ensures that only the first node encountered at a particular line is included in the view.
+            if(mpp.find(line) == mpp.end()) 
+                mpp[line] = node->data;
+            if(node->left != NULL) {
+                q.push({node->left, line-1});
+            }
+            if(node->right != NULL) {
+                q.push({node->right, line + 1});
+            }
+        }
+        for(auto it : mpp) {
+            ans.push_back(it.second);
+        }
+        return ans;
+    }
+};
 #include <bits/stdc++.h>
 using namespace std;
 struct Node
@@ -627,38 +564,35 @@ int main()
     return 0;
 }*/
 /*// Bottom View of a tree
-// class Solution {
-//   public:
-//     vector <int> bottomView(Node *root) {
-//         vector<int> ans;
-//         if(root == NULL) return ans;
-//         map<int,int> mpp;
-//         queue<pair<Node*, int>> q;
-//         q.push({root, 0});
-//         while(!q.empty()) {
-//             auto it = q.front();
-//             q.pop();
-//             Node* node = it.first;
-//             int line = it.second;
-//             mpp[line] = node->data;
-
-//             if(node->left != NULL) {
-//                 q.push({node->left, line-1});
-//             }
-//             if(node->right != NULL) {
-//                 q.push({node->right, line + 1});
-//             }
-
-//         }
-
-//         for(auto it : mpp) {
-//             ans.push_back(it.second);
-//         }
-//         return ans;
-//     }
-// };
+class Solution {
+  public:
+    vector <int> bottomView(Node *root) {
+        vector<int> ans;
+        if(root == NULL) return ans;
+        map<int,int> mpp; // first int for line and second int for node data
+        queue<pair<Node*, int>> q; // first node* for root and second int for line
+        q.push({root, 0});
+        while(!q.empty()) {
+            auto it = q.front();
+            q.pop();
+            Node* node = it.first;
+            int line = it.second;
+//The map mpp is updated regardless of whether a line has been encountered before (mpp[line] = node->data). This ensures that the last node encountered at a particular line will be stored in the map, overwriting any previous values.
+            mpp[line] = node->data;
+            if(node->left != NULL) {
+                q.push({node->left, line-1});
+            }
+            if(node->right != NULL) {
+                q.push({node->right, line + 1});
+            }
+        }
+        for(auto it : mpp) {
+            ans.push_back(it.second);
+        }
+        return ans;
+    }
+};
 #include <bits/stdc++.h>
-#include <map>
 using namespace std;
 struct Node
 {
@@ -723,74 +657,37 @@ int main()
     return 0;
 }*/
 /*// Zig-Zag traversal of a binary tree
-#include <iostream>
-#include <stack>
-using namespace std;
-struct Node
-{
-    int data;
-    struct Node *left, *right;
-};
-void zizagtraversal(struct Node *root)
-{
-    if (!root)
-        return;
-    stack<struct Node *> currentlevel;
-    stack<struct Node *> nextlevel;
-    currentlevel.push(root);
-    bool lefttoright = true;
-    while (!currentlevel.empty())
-    {
-        struct Node *temp = currentlevel.top();
-        currentlevel.pop();
-        if (temp)
-        {
-            cout << temp->data << " ";
-            if (lefttoright)
-            {
-                if (temp->left)
-                    nextlevel.push(temp->left);
-                if (temp->right)
-                    nextlevel.push(temp->right);
-            }
-            else
-            {
-                if (temp->right)
-                    nextlevel.push(temp->right);
-                if (temp->left)
-                    nextlevel.push(temp->left);
-            }
-        }
+vector < vector < int >> zigzagLevelOrder(Node * root) {
+  vector < vector < int >> result;
+  if (root == NULL) return result;
+  
+  queue < Node * > nodesQueue;
+  nodesQueue.push(root);
+  bool leftToRight = true;
 
-        if (currentlevel.empty())
-        {
-            lefttoright = !lefttoright;
-            swap(currentlevel, nextlevel);
-        }
+  while (!nodesQueue.empty()) {
+    int size = nodesQueue.size();
+    vector < int > row(size);
+    for (int i = 0; i < size; i++) {
+      Node * node = nodesQueue.front();
+      nodesQueue.pop();
+
+      // find position to fill node's value
+      int index = (leftToRight) ? i : (size - 1 - i);
+
+      row[index] = node -> val;
+      if (node -> left) {
+        nodesQueue.push(node -> left);
+      }
+      if (node -> right) {
+        nodesQueue.push(node -> right);
+      }
     }
-}
-struct Node *newNode(int data)
-{
-    struct Node *node = new struct Node;
-    node->data = data;
-    node->left = node->right = NULL;
-    return (node);
-}
-int main()
-{
-    // create tree
-    struct Node *root = newNode(1);
-    root->left = newNode(2);
-    root->right = newNode(3);
-    root->left->left = newNode(7);
-    root->left->right = newNode(6);
-    root->right->left = newNode(5);
-    root->right->right = newNode(4);
-    cout << "ZigZag Order traversal of binary tree is \n";
-
-    zizagtraversal(root);
-
-    return 0;
+    // after this level
+    leftToRight = !leftToRight;
+    result.push_back(row);
+  }
+  return result;
 }*/
 /*// Check if a tree is balanced or not
 #include <bits/stdc++.h>
@@ -809,8 +706,7 @@ bool isBalanced(node *root)
         return 1;
     lh = height(root->left);
     rh = height(root->right);
-    if (abs(lh - rh) <= 1 && isBalanced(root->left) &&
-        isBalanced(root->right))
+    if (abs(lh - rh) <= 1 && isBalanced(root->left) && isBalanced(root->right))
         return 1;
     return 0;
 }
@@ -908,87 +804,78 @@ int main()
 }*/
 /*// Boundary traversal of a Binary tree
 #include <bits/stdc++.h>
-#include <stdlib.h>
 using namespace std;
-struct node
-{
-    int data;
-    struct node *left, *right;
+struct node {
+  int data;
+  struct node * left, * right;
 };
-//function to print leaf nodes
-void printLeaves(struct node *root)
-{
-    if (!root)
-        return;
-    printLeaves(root->left);
-    if (!(root->left) && !(root->right))
-        cout << root->data << " ";
-    printLeaves(root->right);
+struct node * newNode(int data) {
+  struct node * node = (struct node * ) malloc(sizeof(struct node));
+  node -> data = data;
+  node -> left = NULL;
+  node -> right = NULL;
+  return (node);
 }
-void printBoundaryLeft(struct node *root)
-{
-    if (!root)
-        return;
-    if (root->left)
-    {
-        cout << root->data << " ";
-        printBoundaryLeft(root->left);
-    }
-    else if (root->right)
-    {
-        cout << root->data << " ";
-        printBoundaryLeft(root->right);
-    }
+bool isLeaf(node * root) {
+  return !root -> left && !root -> right;
 }
-void printBoundaryRight(struct node *root)
-{
-    if (!root)
-        return;
-    if (root->right)
-    {
-        printBoundaryLeft(root->right);
-        cout << root->data << " ";
-    }
-    else if (root->left)
-    {
-        printBoundaryLeft(root->left);
-        cout << root->data << " ";
-    }
+void addLeftBoundary(node * root, vector < int > & res) {
+  node * cur = root -> left;
+  while (cur) {
+    if (!isLeaf(cur)) res.push_back(cur -> data);
+    if (cur -> left) cur = cur -> left;
+    else cur = cur -> right;
+  }
 }
-void printBoundary(struct node *root)
-{
-    if (!root)
-        return;
-    cout << root->data;
-    printBoundaryLeft(root->left);
-    printLeaves(root->left);
-    printLeaves(root->right);
-    printBoundaryRight(root->right);
+void addRightBoundary(node * root, vector < int > & res) {
+  node * cur = root -> right;
+  vector < int > tmp;
+  while (cur) {
+    if (!isLeaf(cur)) tmp.push_back(cur -> data);
+    if (cur -> right) cur = cur -> right;
+    else cur = cur -> left;
+  }
+  for (int i = tmp.size() - 1; i >= 0; --i) {
+    res.push_back(tmp[i]);
+  }
 }
-struct node *newNode(int data)
-{
-    struct node *temp = (struct node *)malloc(sizeof(struct node));
-
-    temp->data = data;
-    temp->left = temp->right = NULL;
-
-    return temp;
+void addLeaves(node * root, vector < int > & res) {
+  if (isLeaf(root)) {
+    res.push_back(root -> data);
+    return;
+  }
+  if (root -> left) addLeaves(root -> left, res);
+  if (root -> right) addLeaves(root -> right, res);
 }
-int main()
-{
-    // Let us construct the tree given in the above diagram
-    struct node *root = newNode(20);
-    root->left = newNode(8);
-    root->left->left = newNode(4);
-    root->left->right = newNode(12);
-    root->left->right->left = newNode(10);
-    root->left->right->right = newNode(14);
-    root->right = newNode(22);
-    root->right->right = newNode(25);
-
-    printBoundary(root);
-
-    return 0;
+vector < int > printBoundary(node * root) {
+  vector < int > res;
+  if (!root) return res;
+  if (!isLeaf(root)) res.push_back(root -> data);
+  addLeftBoundary(root, res);
+  // add leaf nodes
+  addLeaves(root, res);
+  addRightBoundary(root, res);
+  return res;
+}
+int main() {
+  struct node * root = newNode(1);
+  root -> left = newNode(2);
+  root -> left -> left = newNode(3);
+  root -> left -> left -> right = newNode(4);
+  root -> left -> left -> right -> left = newNode(5);
+  root -> left -> left -> right -> right = newNode(6);
+  root -> right = newNode(7);
+  root -> right -> right = newNode(8);
+  root -> right -> right -> left = newNode(9);
+  root -> right -> right -> left -> left = newNode(10);
+  root -> right -> right -> left -> right = newNode(11);
+  vector < int > boundaryTraversal;
+  boundaryTraversal = printBoundary(root);
+  cout << "The Boundary Traversal is : ";
+  for (int i = 0; i < boundaryTraversal.size(); i++) {
+    cout << boundaryTraversal[i] << " ";
+  }
+  return 0;
 }*/
 /*// Construct Binary Tree from String with Bracket Representation
 #include <bits/stdc++.h>
@@ -1183,64 +1070,91 @@ int main()
     printInorder(root);
     return 0;
 }*/
+/*// Children Sum Property
+void reorder(node * root) {
+  if (root == NULL) return;
+  int child = 0;
+// add left and right data to child
+  if (root -> left) {
+    child += root -> left -> data;
+  }
+  if (root -> right) {
+    child += root -> right -> data;
+  }
+// if child is greater than root then make child equal to root
+  if (child < root -> data) {
+    if (root -> left) root -> left -> data = root -> data;
+    else if (root -> right) root -> right -> data = root -> data;
+  }
+// if child is less than root then make root equal to child
+  else if (child > root -> data) {
+    root -> data = child;
+  }
+// recursively call left and right
+  reorder(root -> left);
+  reorder(root -> right);
+// again calculate the total of left and right
+  int tot = 0;
+  if (root -> left) tot += root -> left -> data;
+  if (root -> right) tot += root -> right -> data;
+  if (root -> left || root -> right) root -> data = tot;
+}*/
 /*// Construct Binary tree from Inorder and preorder traversal
 #include <bits/stdc++.h>
 using namespace std;
-class node
-{
-public:
-    char data;
-    node *left, *right;
+struct node {
+  int data;
+  struct node * left, * right;
 };
-int search(char arr[], int start, int end, char value);
-node *newNode(char data);
-node *buildTree(char in[], char pre[], int inStart, int inEnd)
-{
-    static int preIndex = 0;
-    if (inStart > inEnd)
-        return NULL;
-    node *tNode = newNode(pre[preIndex++]);
-    if (inStart == inEnd)
-        return tNode;
-    int inIndex = search(in, inStart, inEnd, tNode->data);
-    tNode->left = buildTree(in, pre, inStart, inIndex - 1);
-    tNode->right = buildTree(in, pre, inIndex + 1, inEnd);
-    return tNode;
+struct node * newNode(int data) {
+  struct node * node = (struct node * ) malloc(sizeof(struct node));
+  node -> data = data;
+  node -> left = NULL;
+  node -> right = NULL;
+  return (node);
 }
-int search(char arr[], int strt, int end, char value)
-{
-    int i;
-    for (i = strt; i <= end; i++)
-    {
-        if (arr[i] == value)
-            return i;
-    }
-}
-node *newNode(char data)
-{
-    node *Node = new node();
-    Node->data = data;
-    Node->left = NULL;
-    Node->right = NULL;
+node * constructTree(vector<int> &preorder, int preStart, int preEnd, vector<int> &inorder, int inStart, int inEnd, map<int,int> &mp) {
+  if (preStart > preEnd || inStart > inEnd) return NULL;
+  node * root = newNode(preorder[preStart]);
+  int elem = mp[root -> data];
+  int nElem = elem - inStart;
 
-    return (Node);
+  root -> left = constructTree(preorder, preStart + 1, preStart + nElem, inorder,
+  inStart, elem - 1, mp);
+  root -> right = constructTree(preorder, preStart + nElem + 1, preEnd, inorder, 
+  elem + 1, inEnd, mp);
+  return root;
 }
-void printInorder(node *node)
-{
-    if (node == NULL)
-        return;
-    printInorder(node->left);
-    cout << node->data << " ";
-    printInorder(node->right);
+node * buildTree(vector < int > & preorder, vector < int > & inorder) {
+  int preStart = 0, preEnd = preorder.size() - 1;
+  int inStart = 0, inEnd = inorder.size() - 1;
+  map < int, int > mp;
+  for (int i = inStart; i <= inEnd; i++) {
+    mp[inorder[i]] = i;
+  }
+  return constructTree(preorder, preStart, preEnd, inorder, inStart, inEnd, mp);
 }
-int main()
-{
-    char in[] = {'D', 'B', 'E', 'A', 'F', 'C'};
-    char pre[] = {'A', 'B', 'D', 'E', 'C', 'F'};
-    int len = sizeof(in) / sizeof(in[0]);
-    node *root = buildTree(in, pre, 0, len - 1);
-    cout << "Inorder traversal of the constructed tree is \n";
-    printInorder(root);
+int main() {
+  vector<int> preorder{10,20,40,50,30,60};
+  vector<int> inorder{40,20,50,10,60,30};
+  node * root = buildTree(preorder, inorder);
+  return 0;
+}*/
+/*// Construct Binary tree from Inorder and postorder traversal
+node * buildTree(vector < int > & postorder, vector < int > & inorder) {
+    map < int, int > mp;
+    for (int i = inStart; i <= inEnd; i++)
+        mp[inorder[i]] = i;
+    return constructTree(postorder, 0, postorder.size() - 1, inorder, 0, inorder.size() - 1, mp);
+}
+node * constructTree(vector < int > & postorder, int postStart, int postEnd, vector < int > & inorder, int inStart, int inEnd, map < int, int > & mp) {
+    if (postStart > postEnd || inStart > inEnd) return NULL;
+    node * root = newNode(postorder[postEnd]);
+    int elem = mp[root -> data];
+    int nElem = elem - inStart;
+    root -> left = constructTree(postorder, postStart, postStart + nElem - 1, inorder, inStart, elem - 1, mp);
+    root -> right = constructTree(postorder, postStart + nElem, postEnd - 1, inorder, elem + 1, inEnd, mp);
+    return root;
 }*/
 /*// Find minimum swaps required to convert a Binary tree into BST
 #include <bits/stdc++.h>
@@ -1524,62 +1438,17 @@ int main()
     return 0;
 }*/
 /*// Sum of Nodes on the Longest path from root to leaf node
-#include <bits/stdc++.h>
-using namespace std;
-struct Node
-{
-    int data;
-    Node *left, *right;
-};
-Node *getNode(int data)
-{
-    Node *newNode = (Node *)malloc(sizeof(Node));
-    newNode->data = data;
-    newNode->left = newNode->right = NULL;
-    return newNode;
+int maxPathSum(TreeNode* root){
+    int maxi=INT_MIN;
+    maxPathSumUtil(root,maxi);
+    return maxi;
 }
-void sumOfLongRootToLeafPath(Node *root, int sum,
-                             int len, int &maxLen, int &maxSum)
-{
-    if (!root)
-    {
-        if (maxLen < len)
-        {
-            maxLen = len;
-            maxSum = sum;
-        }
-        else if (maxLen == len && maxSum < sum)
-            maxSum = sum;
-        return;
-    }
-    sumOfLongRootToLeafPath(root->left, sum + root->data,
-                            len + 1, maxLen, maxSum);
-    sumOfLongRootToLeafPath(root->right, sum + root->data,
-                            len + 1, maxLen, maxSum);
-}
-int sumOfLongRootToLeafPathUtil(Node *root)
-{
-    if (!root)
-        return 0;
-    int maxSum = INT_MIN, maxLen = 0;
-    sumOfLongRootToLeafPath(root, 0, 0, maxLen, maxSum);
-    return maxSum;
-}
-int main()
-{
-    Node *root = getNode(4);
-    root->left = getNode(2);
-    root->right = getNode(5);
-    root->left->left = getNode(7);
-    root->left->right = getNode(1);
-    root->right->left = getNode(2);
-    root->right->right = getNode(3);
-    root->left->right->left = getNode(6);
-
-    cout << "Sum = "
-         << sumOfLongRootToLeafPathUtil(root);
-
-    return 0;
+int maxPathSumUtil(TreeNode* root,int &maxi){
+    if(!root) return 0;
+    int left=max(0,maxPathSumUtil(root->left,maxi));
+    int right=max(0,maxPathSumUtil(root->right,maxi));
+    maxi=max(maxi,left+right+root->val);
+    return max(left,right)+root->val;
 }*/
 // Check if given graph is tree or not.  [ IMP ]
 /*// Find Largest subtree sum in a tree
@@ -1747,54 +1616,17 @@ int main()
     printKPath(root, k);
     return 0;
 }*/
-/*// Find LCA in a Binary tree
-#include <bits/stdc++.h>
-using namespace std;
-class node
-{
-public:
-    int data;
-    node *left, *right;
-};
-node *newNode(int data)
-{
-    node *Node = new node();
-    Node->data = data;
-    Node->left = Node->right = NULL;
-    return (Node);
-}
-node *lca(node *root, int n1, int n2)
-{
-    if (!root)
-        return NULL;
-    if (root->data > n1 && root->data > n2)
-        return lca(root->left, n1, n2);
-    if (root->data < n1 && root->data < n2)
-        return lca(root->right, n1, n2);
-    return root;
-}
-int main()
-{
-    node *root = newNode(20);
-    root->left = newNode(8);
-    root->right = newNode(22);
-    root->left->left = newNode(4);
-    root->left->right = newNode(12);
-    root->left->right->left = newNode(10);
-    root->left->right->right = newNode(14);
-
-    int n1 = 10, n2 = 14;
-    node *t = lca(root, n1, n2);
-    cout << "LCA of " << n1 << " and " << n2 << " is " << t->data << endl;
-
-    n1 = 14, n2 = 8;
-    t = lca(root, n1, n2);
-    cout << "LCA of " << n1 << " and " << n2 << " is " << t->data << endl;
-
-    n1 = 10, n2 = 22;
-    t = lca(root, n1, n2);
-    cout << "LCA of " << n1 << " and " << n2 << " is " << t->data << endl;
-    return 0;
+/*// Find LCA in a Binary
+treeTreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if (root == NULL || root == p || root == q) {
+        return root;
+    }
+    TreeNode* left = lowestCommonAncestor(root->left, p, q);
+    TreeNode* right = lowestCommonAncestor(root->right, p, q);
+    if (left && right) {
+        return root;
+    }
+    return (left != NULL) ? left : right;
 }*/
 /*// Find distance between 2 nodes in a Binary tree
 #include <iostream>
@@ -2061,67 +1893,95 @@ int main()
 /*// Flatten Binary Tree to LinkedList
 #include <bits/stdc++.h>
 using namespace std;
-
-struct node
-{
-    int data;
-    struct node *left, *right;
+struct node {
+  int data;
+  struct node * left, * right;
 };
-
-class Solution
-{
-    node *prev = NULL;
-
-public:
-    void flatten(node *root)
-    {
-        node *cur = root;
-        while (cur)
-        {
-            if (cur->left)
-            {
-                node *pre = cur->left;
-                while (pre->right)
-                {
-                    pre = pre->right;
-                }
-                pre->right = cur->right;
-                cur->right = cur->left;
-                cur->left = NULL;
-            }
-            cur = cur->right;
-        }
+class Solution {
+  node * prev = NULL;
+  public:
+    void flatten(node * root) {
+      if (root == NULL) return;
+      flatten(root -> right);
+      flatten(root -> left);
+      root -> right = prev;
+      root -> left = NULL;
+      prev = root;
     }
 };
-
-struct node *newNode(int data)
-{
-    struct node *node = (struct node *)malloc(sizeof(struct node));
-    node->data = data;
-    node->left = NULL;
-    node->right = NULL;
-
-    return (node);
+struct node * newNode(int data) {
+  struct node * node = (struct node * ) malloc(sizeof(struct node));
+  node -> data = data;
+  node -> left = NULL;
+  node -> right = NULL;
+  return (node);
 }
-
-int main()
-{
-    struct node *root = newNode(1);
-    root->left = newNode(2);
-    root->left->left = newNode(3);
-    root->left->right = newNode(4);
-    root->right = newNode(5);
-    root->right->right = newNode(6);
-    root->right->right->left = newNode(7);
-
-    Solution obj;
-
-    obj.flatten(root);
-    while (root->right != NULL)
-    {
-        cout << root->data << "->";
-        root = root->right;
-    }
-    cout << root->data;
+int main() {
+  struct node * root = newNode(1);
+  root -> left = newNode(2);
+  root -> left -> left = newNode(3);
+  root -> left -> right = newNode(4);
+  root -> right = newNode(5);
+  root -> right -> right = newNode(6);
+  root -> right -> right -> left = newNode(7);
+  Solution obj;
+  obj.flatten(root);
+  while(root->right!=NULL){
+      cout<<root->data<<"->";
+      root=root->right;
+  }
+cout<<root->data;
+  return 0;
+}*/
+/*// Maximum Width
+// time complexity O(n) and space complexity O(n)
+int widthOfBinaryTree(node * root) {
+  if (!root)
     return 0;
+  int ans = 0;
+  queue < pair < node * , int >> q;
+  q.push({root,0});
+  while (!q.empty()) {
+    int size = q.size();
+    int curMin = q.front().second;
+    int leftMost, rightMost;
+    for (int i = 0; i < size; i++) {
+      int cur_id = q.front().second - curMin; // subtracted to prevent integer overflow
+      node * temp = q.front().first;
+      q.pop();
+// is responsible for tracking the leftmost and rightmost indices of the nodes at each level of the binary tree.
+      if (i == 0) leftMost = cur_id;
+      if (i == size - 1) rightMost = cur_id;
+      if (temp -> left)
+        q.push({temp -> left,cur_id * 2 + 1});
+      if (temp -> right)
+        q.push({temp -> right,cur_id * 2 + 2});
+    }
+    ans = max(ans, rightMost - leftMost + 1);
+  }
+  return ans;
+}*/
+/*// Count total Nodes in a Complete Binary Tree
+int findHeightLeft(TreeNode* root){
+    int hgt=0;
+    while(node){
+        hgt++;
+        node=node->left;
+    }
+    return hgt;
+}
+int findHeightRight(TreeNode* root){
+    int hgt=0;
+    while(node){
+        hgt++;
+        node=node->right;
+    }
+    return hgt;
+}
+int countNodes(TreeNode* root) {
+    if(!root) return 0;
+    int lh=findHeightLeft(root);
+    int rh=findHeightRight(root);
+    if(lh==rh) return pow(2,lh)-1;
+    return 1+countNodes(root->left)+countNodes(root->right);
 }*/

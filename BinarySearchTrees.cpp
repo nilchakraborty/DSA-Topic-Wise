@@ -1,67 +1,9 @@
 /*// Fina a value in a BST
-#include <iostream>
-using namespace std;
-
-class BST
-{
-	int data;
-	BST *left, *right;
-
-public:
-	BST();
-	BST(int);
-	BST* Insert(BST*, int);
-	void Inorder(BST*);
-};
-BST ::BST()
-	: data(0)
-	, left(NULL)
-	, right(NULL)
-{
-}
-BST ::BST(int value)
-{
-	data = value;
-	left = right = NULL;
-}
-BST* BST ::Insert(BST* root, int value)
-{
-	if (!root)
-	{
-		return new BST(value);
-	}
-	if (value > root->data)
-	{
-		root->right = Insert(root->right, value);
-	}
-	else
-	{
-		root->left = Insert(root->left, value);
-	}
-	return root;
-}
-void BST ::Inorder(BST* root)
-{
-	if (!root) {
-		return;
-	}
-	Inorder(root->left);
-	cout << root->data << endl;
-	Inorder(root->right);
-}
-int main()
-{
-	BST b, *root = NULL;
-	root = b.Insert(root, 50);
-	b.Insert(root, 30);
-	b.Insert(root, 20);
-	b.Insert(root, 40);
-	b.Insert(root, 70);
-	b.Insert(root, 60);
-	b.Insert(root, 80);
-
-	b.Inorder(root);
-	return 0;
+TreeNode* searchBST(TreeNode* root, int val){
+    while(root!= NULL && root->val != val){
+        root = (root->val > val) ? root->left : root->right;
+    }
+    return root;
 }*/
 /*// Deletion of a node in a BST
 #include <bits/stdc++.h>
@@ -222,135 +164,29 @@ int main()
     getchar();
     return 0;
 }*/
-/*// Find inorder successor and inorder predecessor in a BST
-#include <iostream>
-using namespace std;
-struct Node
-{
-    int key;
-    struct Node *left, *right;
-};
-void findPreSuc(Node *root, Node *&pre, Node *&suc, int key)
-{
-    if (!root)
-        return;
-    if (root->key == key)
-    {
-        if (!root->left)
-        {
-            Node *tmp = root->left;
-            while (tmp->right)
-                tmp = tmp->right;
-            pre = tmp;
+/*// Find inorder successor/predecessor in a BST
+TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p){
+    TreeNode* succ = NULL;
+    while(root!=NULL){
+        if(root->val > p->val){
+            succ = root;
+            root = root->left;
         }
-        if (!root->right)
-        {
-            Node *tmp = root->right;
-            while (tmp->left)
-                tmp = tmp->left;
-            pre = tmp;
-        }
-        return;
+        else
+            root = root->right;
     }
-    if (root->key > key)
-    {
-        suc = root;
-        findPreSuc(root->left, pre, suc, key);
-    }
-    else
-    {
-        pre = root;
-        findPreSuc(root->right, pre, suc, key);
-    }
-}
-Node *newNode(int item)
-{
-    Node *temp = new Node;
-    temp->key = item;
-    temp->left = temp->right = NULL;
-    return temp;
-}
-Node *insert(Node *node, int key)
-{
-    if (node == NULL)
-        return newNode(key);
-    if (key < node->key)
-        node->left = insert(node->left, key);
-    else
-        node->right = insert(node->right, key);
-    return node;
-}
-int main()
-{
-    int key = 65;
-    Node *root = NULL;
-    root = insert(root, 50);
-    insert(root, 30);
-    insert(root, 20);
-    insert(root, 40);
-    insert(root, 70);
-    insert(root, 60);
-    insert(root, 80);
-
-    Node *pre = NULL, *suc = NULL;
-
-    findPreSuc(root, pre, suc, key);
-    if (pre != NULL)
-        cout << "Predecessor is " << pre->key << endl;
-    else
-        cout << "No Predecessor";
-
-    if (suc != NULL)
-        cout << "Successor is " << suc->key;
-    else
-        cout << "No Successor";
-    return 0;
+    return succ;
 }*/
 /*// Check if a tree is a BST or not
-#include <bits/stdc++.h>
-using namespace std;
-class node
-{
-public:
-    int data;
-    node *left;
-    node *right;
-    node(int data)
-    {
-        this->data = data;
-        this->left = NULL;
-        this->right = NULL;
-    }
-};
-
-int isBSTUtil(node *node, int min, int max);
-int isBST(node *node)
-{
-    return (isBSTUtil(node, INT_MIN, INT_MAX));
+int isBST(node *node){
+    return isBSTUtil(node, INT_MIN, INT_MAX);
 }
 int isBSTUtil(node *node, int min, int max)
 {
-    if (node == NULL)
-        return 1;
-    if (node->data < min || node->data > max)
-        return 0;
-    return isBSTUtil(node->left, min, node->data - 1) &&
-           isBSTUtil(node->right, node->data + 1, max);
-}
-int main()
-{
-    node *root = new node(4);
-    root->left = new node(2);
-    root->right = new node(5);
-    root->left->left = new node(1);
-    root->left->right = new node(3);
-
-    if (isBST(root))
-        cout << "Is BST";
-    else
-        cout << "Not a BST";
-
-    return 0;
+    if (node == NULL) return 1;
+    if (node->data <= min || node->data >= max) return 0;
+    return isBSTUtil(node->left, min, node->data) &&
+           isBSTUtil(node->right, node->data , max);
 }*/
 /*// Populate Inorder successor of all nodes
 #include <bits/stdc++.h>
@@ -404,65 +240,16 @@ int main()
 /*// Find LCA  of 2 nodes in a BST
 same as BT problem*/
 /*// Construct BST from preorder traversal
-#include <bits/stdc++.h>
-using namespace std;
-class node
-{
-public:
-    int data;
-    node *left;
-    node *right;
-};
-node *newNode(int data)
-{
-    node *temp = new node();
-
-    temp->data = data;
-    temp->left = temp->right = NULL;
-
-    return temp;
+TreeNode* bstFromPreorder(vector<int>& A){
+    int i = 0;
+    return bstFromPreorder(A, i, INT_MAX);
 }
-node *constructTreeUtil(int pre[], int *preIndex, int low,
-                        int high, int size)
-{
-    if (*preIndex >= size || low > high)
-        return NULL;
-    node *root = newNode(pre[*preIndex]);
-    *preIndex = *preIndex + 1;
-    if (low == high)
-        return root;
-    int i;
-    for (i = low; i <= high; ++i)
-        if (pre[i] > root->data)
-            break;
-    root->left = constructTreeUtil(pre, preIndex, *preIndex, i - 1, size);
-    root->right = constructTreeUtil(pre, preIndex, i, high, size);
+TreeNode* bstFromPreorder(vector<int>& A, int& i, int bound){
+    if (i == A.size() || A[i] > bound) return NULL;
+    TreeNode* root = new TreeNode(A[i++]);
+    root->left = bstFromPreorder(A, i, root->val);
+    root->right = bstFromPreorder(A, i, bound);
     return root;
-}
-node *constructTree(int pre[], int size)
-{
-    int preIndex = 0;
-    return constructTreeUtil(pre, &preIndex, 0, size - 1, size);
-}
-void printInorder(node *node)
-{
-    if (node == NULL)
-        return;
-    printInorder(node->left);
-    cout << node->data << " ";
-    printInorder(node->right);
-}
-int main()
-{
-    int pre[] = {10, 5, 1, 7, 40, 50};
-    int size = sizeof(pre) / sizeof(pre[0]);
-
-    node *root = constructTree(pre, size);
-
-    cout << "Inorder traversal of the constructed tree: \n";
-    printInorder(root);
-
-    return 0;
 }*/
 /*// Convert Binary tree into BST
 BT 1086*/
@@ -645,94 +432,20 @@ int main()
     return 0;
 }*/
 /*// Find Kth largest element in a BST
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Node
-{
-    int key;
-    Node *left, *right;
-};
-Node *newNode(int item)
-{
-    Node *temp = new Node;
-    temp->key = item;
-    temp->left = temp->right = NULL;
-    return temp;
-}
-void kthLargestUtil(Node *root, int k, int &c)
-{
-    if (!root || c >= k)
-        return;
-    kthLargestUtil(root->right, k, c);
-    c++;
-    if (c == k)
-    {
-        cout << "K'th largest element is" << root->key << endl;
-        return;
-    }
-    kthLargestUtil(root->left, k, c);
-}
-void kthLargest(Node *root, int k)
-{
-    int c = 0;
-    kthLargestUtil(root, k, c);
-}
-Node *insert(Node *node, int key)
-{
-    if (node == NULL)
-        return newNode(key);
-    if (key < node->key)
-        node->left = insert(node->left, key);
-    else if (key > node->key)
-        node->right = insert(node->right, key);
-    return node;
-}
-int main()
-{
-    Node *root = NULL;
-    root = insert(root, 50);
-    insert(root, 30);
-    insert(root, 20);
-    insert(root, 40);
-    insert(root, 70);
-    insert(root, 60);
-    insert(root, 80);
-
-    int c = 0;
-    for (int k = 1; k <= 7; k++)
-        kthLargest(root, k);
-
-    return 0;
+void kthLargest(Node *root, int k) {
+  int c = 0;
+  if (!root || c >= k) return;
+  kthLargestUtil(root->right, k, c);
+  c++;
+  if (c == k) {
+    cout << "K'th largest element is" << root->key << endl;
+    return;
+  }
+  kthLargestUtil(root->left, k, c);
 }*/
 /*// Find Kth smallest element in a BST
-#include <iostream>
-using namespace std;
-struct Node
-{
-    int data;
-    Node *left, *right;
-    Node(int x)
-    {
-        data = x;
-        left = right = NULL;
-    }
-};
-Node *insert(Node *root, int x)
-{
-    if (root == NULL)
-        return new Node(x);
-    if (x < root->data)
-        root->left = insert(root->left, x);
-    else if (x > root->data)
-        root->right = insert(root->right, x);
-    return root;
-}
-Node *kthSmallest(Node *root, int &k)
-{
-    // base case
-    if (root == NULL)
-        return NULL;
+Node *kthSmallest(Node *root, int &k){
+    if (root == NULL) return NULL;
     Node *left = kthSmallest(root->left, k);
     if (left != NULL)
         return left;
@@ -740,27 +453,6 @@ Node *kthSmallest(Node *root, int &k)
     if (k == 0)
         return root;
     return kthSmallest(root->right, k);
-}
-void printKthSmallest(Node *root, int k)
-{
-    int count = 0;
-    Node *res = kthSmallest(root, k);
-    if (res == NULL)
-        cout << "There are less than k nodes in the BST";
-    else
-        cout << "K-th Smallest Element is " << res->data;
-}
-int main()
-{
-    Node *root = NULL;
-    int keys[] = {20, 8, 22, 4, 12, 10, 14};
-
-    for (int x : keys)
-        root = insert(root, x);
-
-    int k = 3;
-    printKthSmallest(root, k);
-    return 0;
 }*/
 /*// Count pairs from 2 BST whose sum is equal to given value "X"
 #include <bits/stdc++.h>
@@ -1275,103 +967,36 @@ int main()
     return 0;
 }*/
 /*// Largest BST in a Binary Tree [ V.V.V.V.V IMP ]
-// class NodeValue {
-// public:
-//     int maxNode, minNode, maxSize;
-    
-//     NodeValue(int minNode, int maxNode, int maxSize) {
-//         this->maxNode = maxNode;
-//         this->minNode = minNode;
-//         this->maxSize = maxSize;
-//     }
-// };
-
-// class Solution {
-// private:
-//     NodeValue largestBSTSubtreeHelper(TreeNode* root) {
-//         // An empty tree is a BST of size 0.
-//         if (!root) {
-//             return NodeValue(INT_MAX, INT_MIN, 0);
-//         }
-        
-//         // Get values from left and right subtree of current tree.
-//         auto left = largestBSTSubtreeHelper(root->left);
-//         auto right = largestBSTSubtreeHelper(root->right);
-        
-//         // Current node is greater than max in left AND smaller than min in right, it is a BST.
-//         if (left.maxNode < root->val && root->val < right.minNode) {
-//             // It is a BST.
-//             return NodeValue(min(root->val, left.minNode), max(root->val, right.maxNode), 
-//                             left.maxSize + right.maxSize + 1);
-//         }
-        
-//         // Otherwise, return [-inf, inf] so that parent can't be valid BST
-//         return NodeValue(INT_MIN, INT_MAX, max(left.maxSize, right.maxSize));
-//     }
-//     public:
-//     int largestBSTSubtree(TreeNode* root) {
-//         return largestBSTSubtreeHelper(root).maxSize;
-//     }
-// };
-#include <bits/stdc++.h>
-using namespace std;
-struct Node
-{
-    int data;
-    struct Node *left;
-    struct Node *right;
-};
-struct Node *newNode(int data)
-{
-    struct Node *node = new Node;
-    node->data = data;
-    node->left = node->right = NULL;
-
-    return (node);
-}
-struct Info
-{
-    int sz;     // Size of subtree
-    int max;    // Min value in subtree
-    int min;    // Max value in subtree
-    int ans;    // Size of largest BST which is subtree of current node
-    bool isBST; // If subtree is BST
-};
-Info largestBSTBT(Node *root)
-{
-    if (root == NULL)
-        return {0, INT_MIN, INT_MAX, 0, true};
-    if (root->left == NULL && root->right == NULL)
-        return {1, root->data, root->data, 1, true};
-    Info l = largestBSTBT(root->left);
-    Info r = largestBSTBT(root->right);
-    Info ret;
-    ret.sz = (1 + l.sz + r.sz);
-    if (l.isBST && r.isBST && l.max < root->data &&
-        r.min > root->data)
-    {
-        ret.min = min(l.min, min(r.min, root->data));
-        ret.max = max(r.max, max(l.max, root->data));
-        ret.ans = ret.sz;
-        ret.isBST = true;
-
-        return ret;
+class NodeValue {
+public:
+    int maxNode, minNode, maxSize;
+    NodeValue(int minNode, int maxNode, int maxSize) {
+        this->maxNode = maxNode;
+        this->minNode = minNode;
+        this->maxSize = maxSize;
     }
-    ret.ans = max(l.ans, r.ans);
-    ret.isBST = false;
-
-    return ret;
-}
-int main()
-{
-    struct Node *root = newNode(60);
-    root->left = newNode(65);
-    root->right = newNode(70);
-    root->left->left = newNode(50);
-    printf(" Size of the largest BST is %d\n",
-           largestBSTBT(root).ans);
-    return 0;
-}*/
+};
+class Solution {
+private:
+    NodeValue largestBSTSubtreeHelper(TreeNode* root) {
+        if (!root) {
+            return NodeValue(INT_MAX, INT_MIN, 0);
+        }
+// Get values from left and right subtree of current tree.
+        auto left = largestBSTSubtreeHelper(root->left);
+        auto right = largestBSTSubtreeHelper(root->right);
+// Current node is greater than max in left AND smaller than min in right, it is a BST.
+        if (left.maxNode < root->val && root->val < right.minNode) {// It is a BST.
+            return NodeValue(min(root->val, left.minNode), max(root->val, right.maxNode), left.maxSize + right.maxSize + 1);
+        }
+// Otherwise, return [-inf, inf] so that parent can't be valid BST
+        return NodeValue(INT_MIN, INT_MAX, max(left.maxSize, right.maxSize));
+    }
+    public:
+    int largestBSTSubtree(TreeNode* root) {
+        return largestBSTSubtreeHelper(root).maxSize;
+    }
+};*/
 /*// Flatten BST to sorted list.
 #include <bits/stdc++.h>
 using namespace std;

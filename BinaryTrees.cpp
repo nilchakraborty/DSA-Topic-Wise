@@ -171,14 +171,11 @@ bool getPath(node * root, vector < int > & arr, int x) {
 }*/
 /*// Vertical order traversal
 #include <bits/stdc++.h>
-
 using namespace std;
-
 struct node {
   int data;
   struct node * left, * right;
 };
-
 vector < vector < int >> findVertical(node * root) {
   map < int, map < int, multiset < int >>> nodes; // first int for vertical, second int for level, multiset for sorted order
   queue < pair < node * , pair < int, int >>> todo; // node for root, pair for vertical and level
@@ -210,18 +207,14 @@ vector < vector < int >> findVertical(node * root) {
   }
   return ans;
 }
-
 struct node * newNode(int data) {
   struct node * node = (struct node * ) malloc(sizeof(struct node));
   node -> data = data;
   node -> left = NULL;
   node -> right = NULL;
-
   return (node);
 }
-
 int main() {
-
   struct node * root = newNode(1);
   root -> left = newNode(2);
   root -> left -> left = newNode(4);
@@ -1953,9 +1946,9 @@ int widthOfBinaryTree(node * root) {
       if (i == 0) leftMost = cur_id;
       if (i == size - 1) rightMost = cur_id;
       if (temp -> left)
-        q.push({temp -> left,cur_id * 2 + 1});
+        q.push({temp -> left,(long long)cur_id * 2 + 1});
       if (temp -> right)
-        q.push({temp -> right,cur_id * 2 + 2});
+        q.push({temp -> right,(long long)cur_id * 2 + 2});
     }
     ans = max(ans, rightMost - leftMost + 1);
   }

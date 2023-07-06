@@ -694,3 +694,72 @@ int findMinDiff(int arr[], int n, int m){
     }
     return min_diff;
 }*/
+//Sliding Window & Two Pointer Combined Problems
+/*//Max Consecutive Ones
+// Given a binary array nums and an integer k, return the maximum number of consecutive 1's in the array if you can flip at most k 0's.
+int longestOnes(vector<int> &A, int K){
+    int max_count = 0, zero_count = 0;
+    for (int left = 0, right = 0; right < nums.size(); right++){
+        if (nums[right] == 0)
+            zero_count++;
+        if (zero_count > k){
+            if (nums[left++] == 0)
+                zero_count--;
+        }
+        max_count = max(max_count, right - left + 1);
+    }
+    return max_count;
+}*/
+/*//Binary subarray with sum
+int atMost(vector<int>& nums, int goal){
+    int window_start=0, window_end=0, ans=0,count=0;
+    if (goal < 0)
+        return 0;
+    for(window_end=0; window_end<nums.size() ;window_end++){
+        count+=nums[window_end];
+        while(count>goal){
+            count-=nums[window_start];
+            window_start++;
+        }
+        ans+=window_end-window_start+1;
+    }
+    return ans;
+}
+int numSubarraysWithSum(vector<int>& nums, int goal) {
+    return atMost(nums,goal)-atMost(nums,goal-1);
+}*/
+/*//Maximum Points You Can Obtain from Cards
+int maxScore(vector<int>& cardPoints, int k) {
+    int n = cardPoints.size(),lsum=0,rsum=0;
+    for(int i=0;i<k;i++)
+        lsum+=cardPoints[i];
+    int maxi=lsum;
+    for(int i=0;i<k;i++){
+        rsum+=cardPoints[n-i-1];
+        lsum-=cardPoints[k-1-i];
+        maxi=max(maxi,lsum+rsum);
+    }
+    return maxi;
+}*/
+/*//Subarray with k different integers
+int subArray(vector<int>& nums, int k) {
+    int n = nums.size();
+    unordered_map<int, int> map;
+    int count = 0, start = 0, end = 0;
+    while (end < n) {
+        map[nums[end]]++;
+        while (map.size() > k) {
+            map[nums[start]]--;
+            if (map[nums[start]] == 0) {
+                map.erase(nums[start]);
+            }
+            start++;
+        }
+        count += end - start + 1;
+        end++;
+    }
+    return count;
+}
+int subarraysWithKDistinct(vector<int>& nums, int k) {
+    return subArray(nums, k) - subArray(nums, k - 1);
+}*/

@@ -401,3 +401,83 @@ int main(){
 	cout << s.length() - len << endl;
 	return 0;
 }*/
+//Sliding Window & Two Pointer Combined Problems
+/*//Length of Longest Substring without any Repeating Character
+int lengthOfLongestSubstring(string s) {
+    int n = s.length();
+    int maxLength = 0, i = 0, j = 0;
+    unordered_set<char> s;
+    while (i < n && j < n) {
+        if (s.find(s[j]) == s.end()) {
+            s.insert(s[j++]);
+            maxLength = max(maxLength, j - i);
+        } else {
+            s.erase(s[i++]);
+        }
+    }
+    return maxLength;
+}*/
+/*//longest repeating character replacement
+int characterReplacement(string s, int k){
+    int size = s.size();
+    int ret = 0;
+    vector<int> count(26, 0);
+    int start = 0;
+    int end = 0;
+    int globalMaxFreq = 0;
+    for (; end < size; end++){
+        count[s[end] - 'A'] += 1;
+        globalMaxFreq = max(globalMaxFreq, count[s[end] - 'A']);
+        if ((end - start + 1) - globalMaxFreq > k){
+            ret = max(ret, (end - start));
+            count[s[start] - 'A'] -= 1;
+            start += 1;
+        }
+    }
+    return max(ret, end - start);
+}*/
+/*//Number of substring containing all Three Characters
+int numberOfSubstrings(string s) {
+    int n = s.length();
+    vector<int> count(3); // count of characters 'a', 'b', 'c'
+    int left = 0; // left pointer of the sliding window
+    int result = 0; // number of substrings
+    for (int right = 0; right < n; right++) {
+        count[s[right] - 'a']++; // increment the count of the current character            
+        // If we have at least one occurrence of all characters 'a', 'b', and 'c'
+        while (count[0] > 0 && count[1] > 0 && count[2] > 0) {
+            result += n - right; // all substrings starting from left to right are valid       
+            // Move the left pointer to shrink the window
+            count[s[left] - 'a']--;
+            left++;
+        }
+    }
+    return result;
+}*/
+/*//Maximum Window SubString
+string minWindow(string s, string t){
+    if (s.size() == 0 || t.size() == 0) return "";
+    vector<int> remaining(128, 0);
+    int required = t.size();
+    for (int i = 0; i < required; i++) remaining[t[i]]++;
+    int min = INT_MAX, start = 0, left = 0, i = 0;
+    while (i <= s.size() && start < s.size()){
+        if (required){
+            if (i == s.size()) break;
+            remaining[s[i]]--;
+            if (remaining[s[i]] >= 0) required--;
+            i++;
+        }
+        else{
+            if (i - start < min)
+            {
+                min = i - start;
+                left = start;
+            }
+            remaining[s[start]]++;
+            if (remaining[s[start]] > 0) required++;
+            start++;
+        }
+    }
+    return min == INT_MAX ? "" : s.substr(left, min);
+}*/

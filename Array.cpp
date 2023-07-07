@@ -666,18 +666,29 @@ int subarraysWithXorK(vector<int> a, int k) {
     return cnt;
 }*/
 /*//Trapping Rain Water
-int maxWater(int arr[], int n){
-    int res = 0;
-    for (int i = 0; i < n - 1; i++){
-        int left = arr[i];
-        for (int j = 0; j < i; j++)
-            left = max(left, arr[j]);
-        int right = arr[i];
-        for (int j = i + 1; j < n; j++)
-            right = max(right, arr[j]);
-        res = res + (min(left, right) - arr[i]);
+int trap(vector < int > & height) {
+  int n = height.size();
+  int left = 0, right = n - 1;
+  int res = 0;
+  int maxLeft = 0, maxRight = 0;
+  while (left <= right) {
+    if (height[left] <= height[right]) {
+      if (height[left] >= maxLeft) {
+        maxLeft = height[left];
+      } else {
+        res += maxLeft - height[left];
+      }
+      left++;
+    } else {
+      if (height[right] >= maxRight) {
+        maxRight = height[right];
+      } else {
+        res += maxRight - height[right];
+      }
+      right--;
     }
-    return res;
+  }
+  return res;
 }*/
 /*//Chocolate Distribution Problem
 int findMinDiff(int arr[], int n, int m){

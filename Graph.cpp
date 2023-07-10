@@ -1,2445 +1,808 @@
-/*// Create a Graph, print it
-#include <bits/stdc++.h>
-using namespace std;
-void addEdge(vector<int> adj[], int u, int v)
-{
+/*👉🏻 Graph Representation :
+Nodes: represent points in a graph
+Edges: represent the connections or relationships between those points
+Directed Graph: A directed graph is a graph in which all the edges are unidirectional. This means that the edges only go one way. For example, if there is an edge from node 1 to node 2, there is no edge from node 2 to node 1.
+Undirected Graph: An undirected graph is a graph in which all the edges are bidirectional. This means that the edges can go both ways. For example, if there is an edge from node 1 to node 2, there is also an edge from node 2 to node 1.
+Weighted Graph: A weighted graph is a graph in which each edge is assigned a weight or cost. For example, if the edges of a graph represent cities and the weight represents the distance between the cities, then a weighted edge means that there is a cost or distance associated with traveling from one city to another.
+Adjacency Matrix: An adjacency matrix is a matrix representation of a graph. In an adjacency matrix, the rows represent source vertices and columns represent destination vertices. The value that is stored in the cell at the intersection of row v and column w indicates if there is an edge from vertex v to vertex w. If there is an edge, the value is 1, otherwise, the value is 0.
+Adjacency List: An adjacency list is a collection of unordered lists used to represent a finite graph. Each list describes the set of neighbors of a vertex in the graph. For example, if there are three vertices in a graph, say 0, 1 and 2, then the adjacency list for vertex 0 would be a list containing the vertices 1 and 2.
+Indegree: The indegree of a vertex is the number of edges that are directed towards it.
+Outdegree: The outdegree of a vertex is the number of edges that are directed away from it.
+
+👉🏻 Adjacency Matrix
+int adj[n+1][n+1];
+for(int i = 0; i < m; i++){
+    int u, v;
+    cin >> u >> v;
+    adj[u][v] = 1;
+    adj[v][u] = 1;
+}
+
+👉🏻 Adjacency Lists (undirected graph)
+vector<int> adj[n+1];
+for(int i = 0; i < m; i++){
+    int u, v;
+    cin >> u >> v;
     adj[u].push_back(v);
     adj[v].push_back(u);
 }
-void printGraph(vector<int> adj[], int V)
-{
-    for (int v = 0; v < V; ++v)
-    {
-        cout << "\n Adjacency list of vertex " << v << "\n head ";
-        for (auto x : adj[v])
-            cout << "-> " << x;
-        cout << "\n";
-    }
+
+👉🏻 Adjacency Lists (directed graph)
+vector<int> adj[n+1];
+for(int i = 0; i < m; i++){
+    int u, v;
+    cin >> u >> v;
+    adj[u].push_back(v);
 }
-int main()
-{
-    int V = 5;
-    vector<int> adj[V];
-    addEdge(adj, 0, 1);
-    addEdge(adj, 0, 4);
-    addEdge(adj, 1, 2);
-    addEdge(adj, 1, 3);
-    addEdge(adj, 1, 4);
-    addEdge(adj, 2, 3);
-    addEdge(adj, 3, 4);
-    printGraph(adj, V);
-    return 0;
-}*/
-/*// Implement BFS algorithm
-// class Solution {
-// public:
-// 	vector<int>bfsOfGraph(int V, vector<int> adj[]){
-// 	    vector<int> bfs;
-// 	    vector<int> vis(V, 0); //we set 0 for false
-// 	    queue<int> q;
-// 	    q.push(0); //take first input as 0
-// 	    vis[0] = 1; //make sure that this is marked as visited
-// 	    while(!q.empty()) {
-// 	        int node = q.front();
-// 	        q.pop();
-// 	        bfs.push_back(node);
-// 	        for(auto it : adj[node]) { //we made sure that all the adjacent node is put into the queue
-// 	            if(!vis[it]) { //if its not visited that means it marked as 0
-// 	                q.push(it);
-// 	                vis[it] = 1; //so push it in queue and marked as visited
-// 	            }
-// 	        }
-// 	    }
-// 	    return bfs;
-// 	}
-// };
+
+👉🏻 Graph Traversal:
+for(int i = 0; i < n; i++)
+    if(!visited[i])
+        traversal(i);
+
+👉🏻 take input : int dy[4] = {0, -1, 0, 1};
+int dx[4] = { -1, 0, 1, 0};
+for (int k = 0; k < 4; k++){
+int newy = r + dy[k];
+int newx = c + dx[k];
+DFS(board, newy, newx, rsize, csize);}
+is way better than taking 4 input and run same func 4times like :
+DFS(board, r + 1, c, rsize, csize);
+DFS(board, r, c + 1, rsize, csize);
+DFS(board, r - 1, c, rsize, csize);
+DFS(board, r, c - 1, rsize, csize);*/
+/*// Breadth First Search
+// Time Complexity: O(N) + O(2E)
 #include <bits/stdc++.h>
 using namespace std;
-class Graph
-{
-    int V;
-    list<int> *adj;
-public:
-    Graph(int V);
-    void addEdge(int v, int w);
-    void BFS(int s);
-};
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<int>[V];
-}
-void Graph::addEdge(int v, int w)
-{
-    adj[v].push_back(w);
-}
-void Graph::BFS(int s)
-{
-    bool *visited = new bool[V];
-    for (int i = 0; i < V; i++)
-        visited[i] = false;
-    list<int> queue;
-    visited[s] = true;
-    queue.push_back(s);
-    list<int>::iterator i;
-    while (!queue.empty())
-    {
-        s = queue.front();
-        cout << s << " ";
-        queue.pop_front();
-        for (i = adj[s].begin(); i != adj[s].end(); ++i)
-        {
-            if (!visited[*i])
-            {
-                visited[*i] = true;
-                queue.push_back(*i);
-            }
-        }
-    }
-}
-int main()
-{
-    Graph g(4);
-    g.addEdge(0, 1);
-    g.addEdge(0, 2);
-    g.addEdge(1, 2);
-    g.addEdge(2, 0);
-    g.addEdge(2, 3);
-    g.addEdge(3, 3);
-    cout << "Following is Breadth First Traversal "
-         << "(starting from vertex 2) \n";
-    g.BFS(2);
-    return 0;
-}*/
-/*// Implement DFS Algo
-// class Solution {
-//     void dfs(int node, vector<int> &vis, vector<int> adj[], vector<int> &storeDfs) {
-//         storeDfs.push_back(node);
-//         vis[node] = 1;
-//         for(auto it : adj[node]) {
-//             if(!vis[it]) {
-//                 dfs(it, vis, adj, storeDfs);
-//             }
-//         }
-//     }
-// public:
-// 	vector<int>dfsOfGraph(int V, vector<int> adj[]){
-// 	    vector<int> storeDfs;
-// 	    vector<int> vis(V+1, 0);
-//       for(int i = 1;i<=V;i++) {
-//         if(!vis[i]) dfs(i, vis, adj, storeDfs);
-//       }
-// 	    return storeDfs;
-// 	}
-// };
-#include <bits/stdc++.h>
-using namespace std;
-class Graph
-{
-public:
-    map<int, bool> visited;
-    map<int, list<int>> adj;
-    void addEdge(int v, int w);
-    void DFS(int v);
-};
-void Graph::addEdge(int v, int w)
-{
-    adj[v].push_back(w);
-}
-void Graph::DFS(int v)
-{
-    visited[v] = true;
-    cout << v << " ";
-    list<int>::iterator i;
-    for (i = adj[v].begin(); i != adj[v].end(); ++i)
-        if (!visited[*i])
-            DFS(*i);
-}
-int main()
-{
-    Graph g;
-    g.addEdge(0, 1);
-    g.addEdge(0, 2);
-    g.addEdge(1, 2);
-    g.addEdge(2, 0);
-    g.addEdge(2, 3);
-    g.addEdge(3, 3);
-    cout << "Following is Depth First Traversal"
-            " (starting from vertex 2) \n";
-    g.DFS(2);
-    return 0;
-}*/
-/*// Detect Cycle in Directed Graph using BFS/DFS Algo
-// class Solution { //code is same as topo sort
-// public:
-// 	bool isCyclic(int N, vector<int> adj[]) {
-//         queue<int> q;
-// 	    vector<int> indegree(N, 0);
-// 	    for(int i = 0;i<N;i++) {
-// 	        for(auto it: adj[i]) {
-// 	            indegree[it]++;
-// 	        }
-// 	    }
-// 	    for(int i = 0;i<N;i++) {
-// 	        if(indegree[i] == 0) {
-// 	            q.push(i);
-// 	        }
-// 	    }
-// 	    int cnt = 0;
-// 	    while(!q.empty()) {
-// 	        int node = q.front();
-// 	        q.pop();
-// 	        cnt++;
-// 	        for(auto it : adj[node]) {
-// 	            indegree[it]--;
-// 	            if(indegree[it] == 0) {
-// 	                q.push(it);
-// 	            }
-// 	        }
-// 	    }
-// 	    if(cnt == N) return false; //if cnt=N that means their is no cycle
-// 	    return true;
-// 	}
-// };
-// class Solution {
-//   private:
-//     bool checkCycle(int node, vector < int > adj[], int vis[], int dfsVis[]) {
-//       vis[node] = 1;
-//       dfsVis[node] = 1;
-//       for (auto it: adj[node]) {
-//         if (!vis[it]) {
-//           if (checkCycle(it, adj, vis, dfsVis)) return true;
-//         } else if (dfsVis[it]) {
-//           return true;
-//         }
-//       }
-//       dfsVis[node] = 0;
-//       return false;
-//     }
-//   public:
-//     bool isCyclic(int N, vector < int > adj[]) {
-//       int vis[N], dfsVis[N];
-//       memset(vis, 0, sizeof vis);
-//       memset(dfsVis, 0, sizeof dfsVis);
-//       for (int i = 0; i < N; i++) {
-//         if (!vis[i]) {
-//           // cout << i << endl;
-//           if (checkCycle(i, adj, vis, dfsVis)) {
-//             return true;
-//           }
-//         }
-//       }
-//       return false;
-//     }
-// };
-#include <bits/stdc++.h>
-using namespace std;
-class Graph
-{
-    int V;
-    list<int> *adj;
-    bool isCyclicUtil(int v, bool visited[], bool *rs);
-public:
-    Graph(int V);
-    void addEdge(int v, int w);
-    bool isCyclic();
-};
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<int>[V];
-}
-void Graph::addEdge(int v, int w)
-{
-    adj[v].push_back(w);
-}
-bool Graph::isCyclicUtil(int v, bool visited[], bool *recStack)
-{
-    if (visited[v] == false)
-    {
-        visited[v] = true;
-        recStack[v] = true;
-        list<int>::iterator i;
-        for (i = adj[v].begin(); i != adj[v].end(); ++i)
-        {
-            if (!visited[*i] && isCyclicUtil(*i, visited, recStack))
-                return true;
-            else if (recStack[*i])
-                return true;
-        }
-    }
-    recStack[v] = false;
-    return false;
-}
-bool Graph::isCyclic()
-{
-    bool *visited = new bool[V];
-    bool *recStack = new bool[V];
-    for (int i = 0; i < V; i++)
-    {
-        visited[i] = false;
-        recStack[i] = false;
-    }
-    for (int i = 0; i < V; i++)
-        if (isCyclicUtil(i, visited, recStack))
-            return true;
-    return false;
-}
-int main()
-{
-    Graph g(4);
-    g.addEdge(0, 1);
-    g.addEdge(0, 2);
-    g.addEdge(1, 2);
-    g.addEdge(2, 0);
-    g.addEdge(2, 3);
-    g.addEdge(3, 3);
-    if (g.isCyclic())
-        cout << "Graph contains cycle";
-    else
-        cout << "Graph doesn't contain cycle";
-    return 0;
-}*/
-/*// Detect Cycle in UnDirected Graph using BFS/DFS Algo
-// class Solution {
-// public:
-//     bool checkForCycle(int s, int V, vector<int> adj[], vector<int>& visited)
-//     {
-//         vector<int> parent(V, -1);
-//         // Create a queue for BFS
-//         queue<pair<int,int>> q;
-//         visited[s] = true;
-//         q.push({s, -1});
-//         while (!q.empty()) {
-//             int node = q.front().first;
-//             int par = q.front().second;
-//             q.pop();
-//             for (auto it : adj[node]) {
-//                 if (!visited[it]) {
-//                     visited[it] = true;
-//                     q.push({it, node});
-//                 }
-//                 else if (par != it)
-//                     return true;
-//             }
-//         }
-//         return false;
-//     }
-// public:
-// 	bool isCycle(int V, vector<int>adj[]){
-// 	    vector<int> vis(V, 0);
-// 	    for(int i = 0;i<V;i++) {
-// 	        if(!vis[i]) {
-// 	            if(checkForCycle(i, V, adj, vis)) return true;
-// 	        }
-// 	    }
-// 	    return false;
-// 	}
-// };
-// class Solution {
-// public:
-//     bool checkForCycle(int node, int parent, vector<int> &vis, vector<int> adj[]) {
-//         vis[node] = 1;
-//         for(auto it: adj[node]) {
-//             if(!vis[it]) {
-//                 if(checkForCycle(it, node, vis, adj))
-//                     return true;
-//             }
-//             else if(it!=parent)
-//                 return true;
-//         }
-//         return false;
-//     }
-// public:
-// 	bool isCycle(int V, vector<int>adj[]){
-// 	    vector<int> vis(V+1, 0);
-// 	    for(int i = 0;i<V;i++) {
-// 	        if(!vis[i]) {
-// 	            if(checkForCycle(i, -1, vis, adj)) return true;
-// 	        }
-// 	    }
-// 	    return false;
-// 	}
-// };
-#include <bits/stdc++.h>
-using namespace std;
-class Graph
-{
-    int V;
-    list<int> *adj;
-    bool isCyclicUtil(int v, bool visited[], int parent);
-public:
-    Graph(int V);
-    void addEdge(int v, int w);
-    bool isCyclic();
-};
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<int>[V];
-}
-void Graph::addEdge(int v, int w)
-{
-    adj[v].push_back(w);
-    adj[w].push_back(v);
-}
-bool Graph::isCyclicUtil(int v, bool visited[], int parent)
-{
-    visited[v] = true;
-    list<int>::iterator i;
-    for (i = adj[v].begin(); i != adj[v].end(); ++i)
-    {
-        if (!visited[*i])
-        {
-            if (isCyclicUtil(*i, visited, v))
-                return true;
-        }
-        else if (*i != parent)
-            return true;
-    }
-    return false;
-}
-bool Graph::isCyclic()
-{
-    bool *visited = new bool[V];
-    for (int i = 0; i < V; i++)
-        visited[i] = false;
-    for (int u = 0; u < V; u++)
-    {
-        if (!visited[u])
-            if (isCyclicUtil(u, visited, -1))
-                return true;
-    }
-    return false;
-}
-int main()
-{
-    Graph g1(5);
-    g1.addEdge(1, 0);
-    g1.addEdge(0, 2);
-    g1.addEdge(2, 1);
-    g1.addEdge(0, 3);
-    g1.addEdge(3, 4);
-    g1.isCyclic() ? cout << "Graph contains cycle\n":
-    cout << "Graph doesn't contain cycle\n";
-    Graph g2(3);
-    g2.addEdge(0, 1);
-    g2.addEdge(1, 2);
-    g2.isCyclic() ? cout << "Graph contains cycle\n":
-    cout << "Graph doesn't contain cycle\n";
-    return 0;
-}*/
-/*// Search in a Maze
-Backtracking 1*/
-/*// Minimum Step by Knight
-#include <bits/stdc++.h>
-using namespace std;
-struct cell
-{
-    int x, y;
-    int dis;
-    cell() {}
-    cell(int x, int y, int dis)
-        : x(x), y(y), dis(dis)
-    {
-    }
-};
-bool isInside(int x, int y, int N)
-{
-    if (x >= 1 && x <= N && y >= 1 && y <= N)
-        return true;
-    return false;
-}
-int minStepToReachTarget(
-    int knightPos[], int targetPos[],
-    int N)
-{
-    int dx[] = {-2, -1, 1, 2, -2, -1, 1, 2};
-    int dy[] = {-1, -2, -2, -1, 1, 2, 2, 1};
-    queue<cell> q;
-    q.push(cell(knightPos[0], knightPos[1], 0));
-    cell t;
-    int x, y;
-    bool visit[N + 1][N + 1];
-    for (int i = 1; i <= N; i++)
-        for (int j = 1; j <= N; j++)
-            visit[i][j] = false;
-    visit[knightPos[0]][knightPos[1]] = true;
-    while (!q.empty())
-    {
-        t = q.front();
-        q.pop();
-        if (t.x == targetPos[0] && t.y == targetPos[1])
-            return t.dis;
-        for (int i = 0; i < 8; i++)
-        {
-            x = t.x + dx[i];
-            y = t.y + dy[i];
-            if (isInside(x, y, N) && !visit[x][y])
-            {
-                visit[x][y] = true;
-                q.push(cell(x, y, t.dis + 1));
-            }
-        }
-    }
-}
-int main()
-{
-    int N = 30;
-    int knightPos[] = {1, 1};
-    int targetPos[] = {30, 30};
-    cout << minStepToReachTarget(knightPos, targetPos, N);
-    return 0;
-}*/
-/*// flood fill algo
-#include <bits/stdc++.h>
-using namespace std;
-#define M 8
-#define N 8
-void floodFillUtil(int screen[][N], int x, int y, int prevC, int newC)
-{
-    if (x < 0 || x >= M || y < 0 || y >= N)
-        return;
-    if (screen[x][y] != prevC)
-        return;
-    if (screen[x][y] == newC)
-        return;
-    screen[x][y] = newC;
-    floodFillUtil(screen, x + 1, y, prevC, newC);
-    floodFillUtil(screen, x - 1, y, prevC, newC);
-    floodFillUtil(screen, x, y + 1, prevC, newC);
-    floodFillUtil(screen, x, y - 1, prevC, newC);
-}
-void floodFill(int screen[][N], int x, int y, int newC)
-{
-    int prevC = screen[x][y];
-    if (prevC == newC)
-        return;
-    floodFillUtil(screen, x, y, prevC, newC);
-}
-int main()
-{
-    int screen[M][N] = {
-        {1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 0, 0},
-        {1, 0, 0, 1, 1, 0, 1, 1},
-        {1, 2, 2, 2, 2, 0, 1, 0},
-        {1, 1, 1, 2, 2, 0, 1, 0},
-        {1, 1, 1, 2, 2, 2, 2, 0},
-        {1, 1, 1, 1, 1, 2, 1, 1},
-        {1, 1, 1, 1, 1, 2, 2, 1},
-    };
-    int x = 4, y = 4, newC = 3;
-    floodFill(screen, x, y, newC);
-    cout << "Updated screen after call to floodFill: \n";
-    for (int i = 0; i < M; i++)
-    {
-        for (int j = 0; j < N; j++)
-            cout << screen[i][j] << " ";
-        cout << endl;
-    }
-}*/
-/*// Clone a graph
-// class Solution {
-// public:
-//     unordered_map<Node*, Node*> copies;
-//     Node* cloneGraph(Node* node) {
-//         if (!node)  return NULL;
-//         if (copies.find(node) == copies.end()) {
-//             copies[node] = new Node(node -> val, {});
-//             for (Node* neighbor : node -> neighbors) {
-//                 copies[node] -> neighbors.push_back(cloneGraph(neighbor));
-//             }
-//         }
-//         return copies[node];
-//     }
-// };
-#include <bits/stdc++.h>
-using namespace std;
-struct GraphNode
-{
-    int val;
-    vector<GraphNode *> neighbours;
-};
-GraphNode *cloneGraph(GraphNode *src)
-{
-    map<GraphNode *, GraphNode *> m;
-    queue<GraphNode *> q;
-    q.push(src);
-    GraphNode *node;
-    node = new GraphNode();
-    node->val = src->val;
-    m[src] = node;
-    while (!q.empty())
-    {
-        GraphNode *u = q.front();
-        q.pop();
-        vector<GraphNode *> v = u->neighbours;
-        int n = v.size();
-        for (int i = 0; i < n; i++)
-        {
-            if (m[v[i]] == NULL)
-            {
-                node = new GraphNode();
-                node->val = v[i]->val;
-                m[v[i]] = node;
-                q.push(v[i]);
-            }
-            m[u]->neighbours.push_back(m[v[i]]);
-        }
-    }
-    return m[src];
-}
-GraphNode *buildGraph()
-{
-    GraphNode *node1 = new GraphNode();
-    node1->val = 1;
-    GraphNode *node2 = new GraphNode();
-    node2->val = 2;
-    GraphNode *node3 = new GraphNode();
-    node3->val = 3;
-    GraphNode *node4 = new GraphNode();
-    node4->val = 4;
-    vector<GraphNode *> v;
-    v.push_back(node2);
-    v.push_back(node4);
-    node1->neighbours = v;
-    v.clear();
-    v.push_back(node1);
-    v.push_back(node3);
-    node2->neighbours = v;
-    v.clear();
-    v.push_back(node2);
-    v.push_back(node4);
-    node3->neighbours = v;
-    v.clear();
-    v.push_back(node3);
-    v.push_back(node1);
-    node4->neighbours = v;
-    return node1;
-}
-void bfs(GraphNode *src)
-{
-    map<GraphNode *, bool> visit;
-    queue<GraphNode *> q;
-    q.push(src);
-    visit[src] = true;
-    while (!q.empty())
-    {
-        GraphNode *u = q.front();
-        cout << "Value of Node " << u->val << "\n";
-        cout << "Address of Node " << u << "\n";
-        q.pop();
-        vector<GraphNode *> v = u->neighbours;
-        int n = v.size();
-        for (int i = 0; i < n; i++)
-        {
-            if (!visit[v[i]])
-            {
-                visit[v[i]] = true;
-                q.push(v[i]);
-            }
-        }
-    }
-    cout << endl;
-}
-int main()
-{
-    GraphNode *src = buildGraph();
-    cout << "BFS Traversal before cloning\n";
-    bfs(src);
-    GraphNode *newsrc = cloneGraph(src);
-    cout << "BFS Traversal after cloning\n";
-    bfs(newsrc);
-    return 0;
-}*/
-/*// Making wired Connections
-#include <bits/stdc++.h>
-using namespace std;
-void DFS(unordered_map<int, vector<int>> &adj,
-         int node, vector<bool> &visited)
-{
-    if (visited[node])
-        return;
-    visited[node] = true;
-    for (auto x : adj[node])
-    {
-        if (visited[x] == false)
-            DFS(adj, x, visited);
-    }
-}
-int makeConnectedUtil(int N,
-                      int connections[][2],
-                      int M)
-{
-    vector<bool> visited(N, false);
-    unordered_map<int, vector<int>> adj;
-    int edges = 0;
-    for (int i = 0; i < M; ++i)
-    {
-        adj[connections[i][0]].push_back(
-            connections[i][1]);
-        adj[connections[i][1]].push_back(
-            connections[i][0]);
-        edges += 1;
-    }
-    int components = 0;
-    for (int i = 0; i < N; ++i)
-    {
-        if (visited[i] == false)
-        {
-            components += 1;
-            DFS(adj, i, visited);
-        }
-    }
-    if (edges < N - 1)
-        return -1;
-    int redundant = edges - ((N - 1) - (components - 1));
-    if (redundant >= (components - 1))
-        return components - 1;
-    return -1;
-}
-void makeConnected(int N, int connections[][2], int M)
-{
-    int minOps = makeConnectedUtil(
-        N, connections, M);
-    cout << minOps;
-}
-int main()
-{
-    int N = 4;
-    int connections[][2] = {
-        {0, 1}, {0, 2}, {1, 2}};
-    int M = sizeof(connections) / sizeof(connections[0]);
-    makeConnected(N, connections, M);
-    return 0;
-}*/
-/*// word Ladder
-#include <bits/stdc++.h>
-using namespace std;
-int shortestChainLen(string start, string target, set<string> &D)
-{
-    if (start == target)
-        return 0;
-    if (D.find(target) == D.end())
-        return 0;
-    int level = 0, wordlength = start.size();
-    queue<string> Q;
-    Q.push(start);
-    while (!Q.empty())
-    {
-        ++level;
-        int sizeofQ = Q.size();
-        for (int i = 0; i < sizeofQ; ++i)
-        {
-            string word = Q.front();
-            Q.pop();
-            for (int pos = 0; pos < wordlength; ++pos)
-            {
-                char orig_char = word[pos];
-                for (char c = 'a'; c <= 'z'; ++c)
-                {
-                    word[pos] = c;
-                    if (word == target)
-                        return level + 1;
-                    if (D.find(word) == D.end())
-                        continue;
-                    D.erase(word);
-                    Q.push(word);
+class Solution {
+  public:
+    vector<int> bfsOfGraph(int V, vector<int> adj[]) {
+        int vis[V] = {0}; 
+        vis[0] = 1; 
+        queue<int> q;
+        q.push(0); // push the initial starting node 
+        vector<int> bfs; 
+        while(!q.empty()) {
+            int node = q.front(); 
+            q.pop(); 
+            bfs.push_back(node); 
+            for(auto it : adj[node]) {// traverse for all its neighbours 
+                if(!vis[it]) {
+                    vis[it] = 1; 
+                    q.push(it); 
                 }
-                word[pos] = orig_char;
             }
         }
-    }
-    return 0;
-}
-int main()
-{
-    set<string> D;
-    D.insert("poon");
-    D.insert("plee");
-    D.insert("same");
-    D.insert("poie");
-    D.insert("plie");
-    D.insert("poin");
-    D.insert("plea");
-    string start = "toon";
-    string target = "plea";
-    cout << "Length of shortest chain is: "
-         << shortestChainLen(start, target, D);
-    return 0;
-}*/
-/*// Dijkstra algo
-#include <bits/stdc++.h>
-using namespace std;
-int main()
-{
-    int n, m, source;
-    cin >> n >> m;
-    vector<pair<int, int>> g[n + 1];
-    int a, b, wt;
-    for (int i = 0; i < m; i++)
-    {
-        cin >> a >> b >> wt;
-        g[a].push_back(make_pair(b, wt));
-        g[b].push_back(make_pair(a, wt));
-    }
-    cin >> source;
-    // Dijkstra's algorithm begins from here
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-    vector<int> distTo(n + 1, INT_MAX); // 1-indexed array for calculating shortest paths
-    distTo[source] = 0;
-    pq.push(make_pair(0, source)); // (dist,source)
-    while (!pq.empty())
-    {
-        int dist = pq.top().first;
-        int prev = pq.top().second;
-        pq.pop();
-        vector<pair<int, int>>::iterator it;
-        for (it = g[prev].begin(); it != g[prev].end(); it++)
-        {
-            int next = it->first;
-            int nextDist = it->second;
-            if (distTo[next] > distTo[prev] + nextDist)
-            {
-                distTo[next] = distTo[prev] + nextDist;
-                pq.push(make_pair(distTo[next], next));
-            }
-        }
-    }
-    cout << "The distances from source, " << source << ", are : \n";
-    for (int i = 1; i <= n; i++)
-        cout << distTo[i] << " ";
-    cout << "\n";
-    return 0;
-}*/
-/*// Implement Topological Sort
-// class Solution {
-// public:
-// 	vector<int> topo(int N, vector<int> adj[]) {
-//         queue<int> q;
-// 	    vector<int> indegree(N, 0);
-// 	    for(int i = 0;i<N;i++) {
-// 	        for(auto it: adj[i]) {
-// 	            indegree[it]++;
-// 	        }
-// 	    }
-// 	    for(int i = 0;i<N;i++) {
-// 	        if(indegree[i] == 0) {
-// 	            q.push(i);
-// 	        }
-// 	    }
-// 	    vector<int> topo
-// 	    while(!q.empty()) {
-// 	        int node = q.front();
-// 	        q.pop();
-// 	        topo.push_back(node)
-// 	        for(auto it : adj[node]) {
-// 	            indegree[it]--;
-// 	            if(indegree[it] == 0) {
-// 	                q.push(it);
-// 	            }
-// 	        }
-// 	    }
-// 	    return topo;
-// 	}
-// };
-// class Solution{
-//     void findTopoSort(int node, vector<int> &vis, stack<int> &st, vector<int> adj[]) {
-//         vis[node] = 1;
-//         for(auto it : adj[node]) {
-//             if(!vis[it]) {
-//                 findTopoSort(it, vis, st, adj);
-//             }
-//         }
-//         st.push(node);
-//     }
-// 	public:
-// 	vector<int> topoSort(int N, vector<int> adj[]) {
-// 	    stack<int> st;
-// 	    vector<int> vis(N, 0);
-// 	    for(int i = 0;i<N;i++) {
-// 	        if(vis[i] == 0) {
-// 	            findTopoSort(i, vis, st, adj);
-// 	        }
-// 	    }
-// 	    vector<int> topo;
-// 	    while(!st.empty()) {
-// 	        topo.push_back(st.top());
-// 	        st.pop();
-// 	    }
-// 	    return topo;
-// 	}
-// };
-#include <bits/stdc++.h>
-using namespace std;
-class Graph
-{
-    int V;
-    list<int> *adj;
-    void topologicalSortUtil(int v, bool visited[], stack<int> &Stack);
-public:
-    Graph(int V);
-    void addEdge(int v, int w);
-    void topologicalSort();
-};
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<int>[V];
-}
-void Graph::addEdge(int v, int w)
-{
-    adj[v].push_back(w);
-}
-void Graph::topologicalSortUtil(int v, bool visited[], stack<int> &Stack)
-{
-    visited[v] = true;
-    list<int>::iterator i;
-    for (i = adj[v].begin(); i != adj[v].end(); ++i)
-        if (!visited[*i])
-            topologicalSortUtil(*i, visited, Stack);
-    Stack.push(v);
-}
-void Graph::topologicalSort()
-{
-    stack<int> Stack;
-    bool *visited = new bool[V];
-    for (int i = 0; i < V; i++)
-        visited[i] = false;
-    for (int i = 0; i < V; i++)
-        if (visited[i] == false)
-            topologicalSortUtil(i, visited, Stack);
-    while (Stack.empty() == false)
-    {
-        cout << Stack.top() << " ";
-        Stack.pop();
-    }
-}
-int main()
-{
-    Graph g(6);
-    g.addEdge(5, 2);
-    g.addEdge(5, 0);
-    g.addEdge(4, 0);
-    g.addEdge(4, 1);
-    g.addEdge(2, 3);
-    g.addEdge(3, 1);
-    cout << "Following is a Topological Sort of the given graph \n";
-    g.topologicalSort();
-    return 0;
-}*/
-/*// Minimum time taken by each job to be completed given by a Directed Acyclic Graph
-#include <bits/stdc++.h>
-using namespace std;
-#define maxN 100000
-vector<int> graph[maxN];
-int indegree[maxN];
-int job[maxN];
-void addEdge(int u, int v)
-{
-    graph[u].push_back(v);
-    indegree[v]++;
-}
-void printOrder(int n, int m)
-{
-    queue<int> q;
-    for (int i = 1; i <= n; i++)
-    {
-        if (indegree[i] == 0)
-        {
-            q.push(i);
-            job[i] = 1;
-        }
-    }
-    while (!q.empty())
-    {
-        int cur = q.front();
-        q.pop();
-        for (int adj : graph[cur])
-        {
-            indegree[adj]--;
-            if (indegree[adj] == 0)
-            {
-                job[adj] = job[cur] + 1;
-                q.push(adj);
-            }
-        }
-    }
-    for (int i = 1; i <= n; i++)
-        cout << job[i] << " ";
-    cout << "\n";
-}
-int main()
-{
-    int n, m;
-    n = 10;
-    m = 13;
-    addEdge(1, 3);
-    addEdge(1, 4);
-    addEdge(1, 5);
-    addEdge(2, 3);
-    addEdge(2, 8);
-    addEdge(2, 9);
-    addEdge(3, 6);
-    addEdge(4, 6);
-    addEdge(4, 8);
-    addEdge(5, 8);
-    addEdge(6, 7);
-    addEdge(7, 8);
-    addEdge(8, 10);
-    printOrder(n, m);
-    return 0;
-}*/
-/*// Find whether it is possible to finish all tasks or not from given dependencies
-#include <bits/stdc++.h>
-using namespace std;
-vector<unordered_set<int>> make_graph(int numTasks,
-                                      vector<pair<int, int>> &prerequisites)
-{
-    vector<unordered_set<int>> graph(numTasks);
-    for (auto pre : prerequisites)
-        graph[pre.second].insert(pre.first);
-    return graph;
-}
-bool dfs_cycle(vector<unordered_set<int>> &graph, int node,
-               vector<bool> &onpath, vector<bool> &visited)
-{
-    if (visited[node])
-        return false;
-    onpath[node] = visited[node] = true;
-    for (int neigh : graph[node])
-        if (onpath[neigh] || dfs_cycle(graph, neigh, onpath, visited))
-            return true;
-    return onpath[node] = false;
-}
-bool canFinish(int numTasks, vector<pair<int, int>> &prerequisites)
-{
-    vector<unordered_set<int>> graph = make_graph(numTasks, prerequisites);
-    vector<bool> onpath(numTasks, false), visited(numTasks, false);
-    for (int i = 0; i < numTasks; i++)
-        if (!visited[i] && dfs_cycle(graph, i, onpath, visited))
-            return false;
-    return true;
-}
-int main()
-{
-    int numTasks = 4;
-    vector<pair<int, int>> prerequisites;
-    prerequisites.push_back(make_pair(1, 0));
-    prerequisites.push_back(make_pair(2, 1));
-    prerequisites.push_back(make_pair(3, 2));
-    if (canFinish(numTasks, prerequisites))
-    {
-        cout << "Possible to finish all tasks";
-    }
-    else
-    {
-        cout << "Impossible to finish all tasks";
-    }
-    return 0;
-}*/
-/*// Find the no. of Isalnds
-#include <bits/stdc++.h>
-using namespace std;
-void DFS(vector<vector<int>> &M, int i, int j, int ROW, int COL)
-{
-    if (i < 0 || j < 0 || i > (ROW - 1) || j > (COL - 1) || M[i][j] != 1)
-        return;
-    if (M[i][j] == 1)
-    {
-        M[i][j] = 0;
-        DFS(M, i + 1, j, ROW, COL);
-        DFS(M, i - 1, j, ROW, COL);
-        DFS(M, i, j + 1, ROW, COL);
-        DFS(M, i, j - 1, ROW, COL);
-        DFS(M, i + 1, j + 1, ROW, COL);
-        DFS(M, i - 1, j - 1, ROW, COL);
-        DFS(M, i + 1, j - 1, ROW, COL);
-        DFS(M, i - 1, j + 1, ROW, COL);
-    }
-}
-int countIslands(vector<vector<int>> &M)
-{
-    int ROW = M.size();
-    int COL = M[0].size();
-    int count = 0;
-    for (int i = 0; i < ROW; i++)
-    {
-        for (int j = 0; j < COL; j++)
-        {
-            if (M[i][j] == 1)
-            {
-                M[i][j] = 0;
-                count++;
-                DFS(M, i + 1, j, ROW, COL);
-                DFS(M, i - 1, j, ROW, COL);
-                DFS(M, i, j + 1, ROW, COL);
-                DFS(M, i, j - 1, ROW, COL);
-                DFS(M, i + 1, j + 1, ROW, COL);
-                DFS(M, i - 1, j - 1, ROW, COL);
-                DFS(M, i + 1, j - 1, ROW, COL);
-                DFS(M, i - 1, j + 1, ROW, COL);
-            }
-        }
-    }
-    return count;
-}
-int main()
-{
-    vector<vector<int>> M = {{1, 1, 0, 0, 0},
-                             {0, 1, 0, 0, 1},
-                             {1, 0, 0, 1, 1},
-                             {0, 0, 0, 0, 0},
-                             {1, 0, 1, 0, 1}};
-    cout << "Number of islands is: " << countIslands(M);
-    return 0;
-}*/
-/*// Given a sorted Dictionary of an Alien Language, find order of characters
-#include <bits/stdc++.h>
-using namespace std;
-class Graph
-{
-    int V;
-    list<int> *adj;
-    void topologicalSortUtil(int v, bool visited[], stack<int> &Stack);
-public:
-    Graph(int V);
-    void addEdge(int v, int w);
-    void topologicalSort();
-};
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<int>[V];
-}
-void Graph::addEdge(int v, int w)
-{
-    adj[v].push_back(w);
-}
-void Graph::topologicalSortUtil(int v, bool visited[], stack<int> &Stack)
-{
-    visited[v] = true;
-    list<int>::iterator i;
-    for (i = adj[v].begin(); i != adj[v].end(); ++i)
-        if (!visited[*i])
-            topologicalSortUtil(*i, visited, Stack);
-    Stack.push(v);
-}
-void Graph::topologicalSort()
-{
-    stack<int> Stack;
-    bool *visited = new bool[V];
-    for (int i = 0; i < V; i++)
-        visited[i] = false;
-    for (int i = 0; i < V; i++)
-        if (visited[i] == false)
-            topologicalSortUtil(i, visited, Stack);
-    while (Stack.empty() == false)
-    {
-        cout << (char)('a' + Stack.top()) << " ";
-        Stack.pop();
-    }
-}
-int min(int x, int y)
-{
-    return (x < y) ? x : y;
-}
-void printOrder(string words[], int n, int alpha)
-{
-    Graph g(alpha);
-    for (int i = 0; i < n - 1; i++)
-    {
-        string word1 = words[i], word2 = words[i + 1];
-        for (int j = 0; j < min(word1.length(), word2.length()); j++)
-        {
-            if (word1[j] != word2[j])
-            {
-                g.addEdge(word1[j] - 'a', word2[j] - 'a');
-                break;
-            }
-        }
-    }
-    g.topologicalSort();
-}
-int main()
-{
-    string words[] = {"caa", "aaa", "aab"};
-    printOrder(words, 3, 3);
-    return 0;
-}*/
-/*// Implement Kruksal’s Algorithm
-#include<bits/stdc++.h>
-using namespace std;
-struct node {
-    int u;
-    int v;
-    int wt;
-    node(int first, int second, int weight) {
-        u = first;
-        v = second;
-        wt = weight;
+        return bfs; 
     }
 };
-bool comp(node a, node b) {
-    return a.wt < b.wt;
+void addEdge(vector <int> adj[], int u, int v) {
+    adj[u].push_back(v);
+    adj[v].push_back(u);
 }
-int findPar(int u, vector<int> &parent) {
-    if(u == parent[u]) return u;
-    return parent[u] = findPar(parent[u], parent);
-}
-void unionn(int u, int v, vector<int> &parent, vector<int> &rank) {
-    u = findPar(u, parent);
-    v = findPar(v, parent);
-    if(rank[u] < rank[v]) {
-        parent[u] = v;
-    }
-    else if(rank[v] < rank[u]) {
-        parent[v] = u;
-    }
-    else {
-        parent[v] = u;
-        rank[u]++;
-    }
-}
-int main(){
-    int N=5,m=6;
-    vector<node> edges;
-    edges.push_back(node(0,1,2));
-    edges.push_back(node(0,3,6));
-    edges.push_back(node(1,0,2));
-    edges.push_back(node(1,2,3));
-    edges.push_back(node(1,3,8));
-    edges.push_back(node(1,4,5));
-    edges.push_back(node(2,1,3));
-    edges.push_back(node(2,4,7));
-    edges.push_back(node(3,0,6));
-    edges.push_back(node(3,1,8));
-    edges.push_back(node(4,1,5));
-    edges.push_back(node(4,2,7));
-    sort(edges.begin(), edges.end(), comp);
-    vector<int> parent(N);
-    for(int i = 0;i<N;i++)
-        parent[i] = i;
-    vector<int> rank(N, 0);
-    int cost = 0;
-    vector<pair<int,int>> mst;
-    for(auto it : edges) {
-        if(findPar(it.v, parent) != findPar(it.u, parent)) {
-            cost += it.wt;
-            mst.push_back({it.u, it.v});
-            unionn(it.u, it.v, parent, rank);
-        }
-    }
-    cout << cost << endl;
-    for(auto it : mst) cout << it.first << " - " << it.second << endl;
-    return 0;
-}*/
-/*// Implement Prim’s Algorithm
-#include<bits/stdc++.h>
-using namespace std;
-int main(){
-    int N,m;
-    cin >> N >> m;
-    vector<pair<int,int> > adj[N];
-    int a,b,wt;
-    for(int i = 0; i<m ; i++){
-        cin >> a >> b >> wt;
-        adj[a].push_back(make_pair(b,wt));
-        adj[b].push_back(make_pair(a,wt));
-    }
-    int parent[N];
-    int key[N];
-    bool mstSet[N];
-    for (int i = 0; i < N; i++)
-        key[i] = INT_MAX, mstSet[i] = false;
-    priority_queue< pair<int,int>, vector <pair<int,int>> , greater<pair<int,int>> > pq;
-    key[0] = 0;
-    parent[0] = -1;
-    pq.push({0, 0});
-    while(!pq.empty())
-    {
-        int u = pq.top().second;
-        pq.pop();
-        mstSet[u] = true;
-        for (auto it : adj[u]) {
-            int v = it.first;
-            int weight = it.second;
-            if (mstSet[v] == false && weight < key[v]) {
-                parent[v] = u;
-                pq.push({key[v], v});
-                key[v] = weight;
-            }
-        }
-    }
-    for (int i = 1; i < N; i++)
-        cout << parent[i] << " - " << i <<" \n";
-    return 0;
-}*/
-// Total no. of Spanning tree in a graph
-/*// Implement Bellman Ford Algorithm
-#include <bits/stdc++.h>
-using namespace std;
-struct node {
-    int u;
-    int v;
-    int wt;
-    node(int first, int second, int weight) {
-        u = first;
-        v = second;
-        wt = weight;
-    }
-};
-int main(){
-    int N,m;
-    cin >> N >> m;
-    vector<node> edges;
-    for(int i = 0;i<m;i++) {
-        int u, v, wt;
-        cin >> u >> v >> wt;
-        edges.push_back(node(u, v, wt));
-    }
-    int src;
-    cin >> src;
-    int inf = 10000000;
-    vector<int> dist(N, inf);
-    dist[src] = 0;
-    for(int i = 1;i<=N-1;i++) {
-        for(auto it: edges) {
-            if(dist[it.u] + it.wt < dist[it.v]) {
-                dist[it.v] = dist[it.u] + it.wt;
-            }
-        }
-    }
-    int fl = 0;
-    for(auto it: edges) {
-        if(dist[it.u] + it.wt < dist[it.v]) {
-            cout << "Negative Cycle";
-            fl = 1;
-            break;
-        }
-    }
-    if(!fl) { //if fl counter not set then we can say shortest distance
-        for(int i = 0;i<N;i++) {
-            cout << i << " " << dist[i] << endl;
-        }
-    }
-    return 0;
-}*/
-/*// Implement Floyd warshallAlgorithm
-#include <bits/stdc++.h>
-using namespace std;
-#define V 4
-#define INF 99999
-void printSolution(int dist[][V]);
-void floydWarshall(int graph[][V])
-{
-    int dist[V][V], i, j, k;
-    for (i = 0; i < V; i++)
-        for (j = 0; j < V; j++)
-            dist[i][j] = graph[i][j];
-    for (k = 0; k < V; k++)
-    {
-        for (i = 0; i < V; i++)
-        {
-            for (j = 0; j < V; j++)
-            {
-                if (dist[i][j] > (dist[i][k] + dist[k][j]) && (dist[k][j] != INF && dist[i][k] != INF))
-                    dist[i][j] = dist[i][k] + dist[k][j];
-            }
-        }
-    }
-    printSolution(dist);
-}
-void printSolution(int dist[][V])
-{
-    cout << "The following matrix shows the shortest "
-            "distances"
-            " between every pair of vertices \n";
-    for (int i = 0; i < V; i++)
-    {
-        for (int j = 0; j < V; j++)
-        {
-            if (dist[i][j] == INF)
-                cout << "INF"
-                     << "	 ";
-            else
-                cout << dist[i][j] << "	 ";
-        }
-        cout << endl;
-    }
-}
-int main()
-{
-    int graph[V][V] = {{0, 5, INF, 10},
-                       {INF, 0, 3, INF},
-                       {INF, INF, 0, 1},
-                       {INF, INF, INF, 0}};
-    floydWarshall(graph);
-    return 0;
-}*/
-// Travelling Salesman Problem
-// Graph ColouringProblem
-/*// Snake and Ladders Problem
-#include <iostream>
-#include <queue>
-using namespace std;
-struct queueEntry
-{
-    int v;
-    int dist;
-};
-int getMinDiceThrows(int move[], int N)
-{
-    bool *visited = new bool[N];
-    for (int i = 0; i < N; i++)
-        visited[i] = false;
-    queue<queueEntry> q;
-    visited[0] = true;
-    queueEntry s = {0, 0};
-    q.push(s);
-    queueEntry qe;
-    while (!q.empty())
-    {
-        qe = q.front();
-        int v = qe.v;
-        if (v == N - 1)
-            break;
-        q.pop();
-        for (int j = v + 1; j <= (v + 6) && j < N; ++j)
-        {
-            if (!visited[j])
-            {
-                queueEntry a;
-                a.dist = (qe.dist + 1);
-                visited[j] = true;
-                if (move[j] != -1)
-                    a.v = move[j];
-                else
-                    a.v = j;
-                q.push(a);
-            }
-        }
-    }
-    return qe.dist;
-}
-int main()
-{
-    int N = 30;
-    int moves[N];
-    for (int i = 0; i < N; i++)
-        moves[i] = -1;
-    // Ladders
-    moves[2] = 21;
-    moves[4] = 7;
-    moves[10] = 25;
-    moves[19] = 28;
-    // Snakes
-    moves[26] = 0;
-    moves[20] = 8;
-    moves[16] = 3;
-    moves[18] = 6;
-    cout << "Min Dice throws required is " << getMinDiceThrows(moves, N);
-    return 0;
-}*/
-/*// Find bridge in a graph
-#include <bits/stdc++.h>
-#define NIL -1
-using namespace std;
-class Graph
-{
-    int V;
-    list<int> *adj;
-    void bridgeUtil(int v, bool visited[], int disc[], int low[],
-                    int parent[]);
-public:
-    Graph(int V);
-    void addEdge(int v, int w);
-    void bridge();
-};
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<int>[V];
-}
-void Graph::addEdge(int v, int w)
-{
-    adj[v].push_back(w);
-    adj[w].push_back(v);
-}
-void Graph::bridgeUtil(int u, bool visited[], int disc[],
-                       int low[], int parent[])
-{
-    static int time = 0;
-    visited[u] = true;
-    disc[u] = low[u] = ++time;
-    list<int>::iterator i;
-    for (i = adj[u].begin(); i != adj[u].end(); ++i)
-    {
-        int v = *i;
-        if (!visited[v])
-        {
-            parent[v] = u;
-            bridgeUtil(v, visited, disc, low, parent);
-            low[u] = min(low[u], low[v]);
-            if (low[v] > disc[u])
-                cout << u << " " << v << endl;
-        }
-        else if (v != parent[u])
-            low[u] = min(low[u], disc[v]);
-    }
-}
-void Graph::bridge()
-{
-    bool *visited = new bool[V];
-    int *disc = new int[V];
-    int *low = new int[V];
-    int *parent = new int[V];
-    for (int i = 0; i < V; i++)
-    {
-        parent[i] = NIL;
-        visited[i] = false;
-    }
-    for (int i = 0; i < V; i++)
-        if (visited[i] == false)
-            bridgeUtil(i, visited, disc, low, parent);
-}
-int main()
-{
-    cout << "\nBridges in first graph \n";
-    Graph g1(5);
-    g1.addEdge(1, 0);
-    g1.addEdge(0, 2);
-    g1.addEdge(2, 1);
-    g1.addEdge(0, 3);
-    g1.addEdge(3, 4);
-    g1.bridge();
-    cout << "\nBridges in second graph \n";
-    Graph g2(4);
-    g2.addEdge(0, 1);
-    g2.addEdge(1, 2);
-    g2.addEdge(2, 3);
-    g2.bridge();
-    cout << "\nBridges in third graph \n";
-    Graph g3(7);
-    g3.addEdge(0, 1);
-    g3.addEdge(1, 2);
-    g3.addEdge(2, 0);
-    g3.addEdge(1, 3);
-    g3.addEdge(1, 4);
-    g3.addEdge(1, 6);
-    g3.addEdge(3, 5);
-    g3.addEdge(4, 5);
-    g3.bridge();
-    return 0;
-}*/
-/*// Count Strongly connected Components(Kosaraju Algo)
-#include <bits/stdc++.h>
-using namespace std;
-void dfs(int node, stack<int> &st, vector<int> &vis, vector<int> adj[]) {
-    vis[node] = 1;
-    for(auto it: adj[node]) {
-        if(!vis[it]) {
-            dfs(it, st, vis, adj);
-        }
-    }
-    st.push(node);
-}
-void revDfs(int node, vector<int> &vis, vector<int> transpose[]) {
-    cout << node << " ";
-    vis[node] = 1;
-    for(auto it: transpose[node]) {
-        if(!vis[it]) {
-            revDfs(it, vis, transpose);
-        }
+void printAns(vector <int> &ans) {
+    for (int i = 0; i < ans.size(); i++) {
+        cout << ans[i] << " ";
     }
 }
 int main() {
-    int n, m;
-    cin >> n >> m;
-    vector<int> adj[n];
-    for(int i = 0;i<m;i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-    }
-    stack<int> st;
-    vector<int> vis(n, 0);
-    for(int i = 0;i<n;i++) {
-        if(!vis[i]) {
-            dfs(i, st, vis, adj);
-        }
-    }
-    vector<int> transpose[n];
-    for(int i = 0;i<n;i++) {
-        vis[i] = 0;
-        for(auto it: adj[i]) {
-            transpose[it].push_back(i);
-        }
-    }
-    while(!st.empty()) {
-        int node = st.top();
-        st.pop();
-        if(!vis[node]) {
-            cout << "SCC: ";
-            revDfs(node, vis, transpose);
-            cout << endl;
-        }
-    }
+    vector <int> adj[6];
+    addEdge(adj, 0, 1);
+    addEdge(adj, 1, 2);
+    addEdge(adj, 1, 3);
+    addEdge(adj, 0, 4);
+    Solution obj;
+    vector <int> ans = obj.bfsOfGraph(5, adj);
+    printAns(ans);
     return 0;
 }*/
-/*// Check whether a graph is Bipartite or Not
-// bool bipartiteBfs(int src, vector<int> adj[], int color[]) {
-//     queue<int>q;
-//     q.push(src);
-//     color[src] = 1;
-//     while(!q.empty()) {
-//         int node = q.front();
-//         q.pop();
-//         for(auto it : adj[node]) {
-//             if(color[it] == -1) {
-//                 color[it] = 1 - color[node];
-//                 q.push(it);
-//             } else if(color[it] == color[node]) {
-//                 return false;
-//             }
-//         }
-//     }
-//     return true;
-// }
-// bool checkBipartite(vector<int> adj[], int n) {
-//     int color[n];
-//     memset(color, -1, sizeof color);
-//     for(int i = 0;i<n;i++) {
-//         if(color[i] == -1) {
-//             if(!bipartiteBfs(i, adj, color)) {
-//                 return false;
-//             }
-//         }
-//     }
-//     return true;
-// }
-// bool bipartiteDfs(int node, vector<int> adj[], int color[]) {
-//     for(auto it : adj[node]) {
-//         if(color[it] == -1) {
-//             color[it] = 1 - color[node];
-//             if(!bipartiteDfs(it, adj, color)) {
-//                 return false;
-//             }
-//         } else if(color[it] == color[node]) return false;
-//     }
-//     return true;
-// }
-// bool checkBipartite(vector<int> adj[], int n) {
-//     int color[n];
-//     memset(color, -1, sizeof color);
-//     for(int i = 0;i<n;i++) {
-//         if(color[i] == -1) {
-//             color[i] = 1;
-//             if(!bipartiteDfs(i, adj, color)) {
-//                 return false;
-//             }
-//         }
-//     }
-//     return true;
-// }
-#include <iostream>
-using namespace std;
-#define V 4
-bool colorGraph(int G[][V], int color[], int pos, int c)
-{
-    if (color[pos] != -1 && color[pos] != c)
-        return false;
-    color[pos] = c;
-    bool ans = true;
-    for (int i = 0; i < V; i++)
-    {
-        if (G[pos][i])
-        {
-            if (color[i] == -1)
-                ans &= colorGraph(G, color, i, 1 - c);
-            if (color[i] != -1 && color[i] != 1 - c)
-                return false;
-        }
-        if (!ans)
-            return false;
-    }
-    return true;
-}
-bool isBipartite(int G[][V])
-{
-    int color[V];
-    for (int i = 0; i < V; i++)
-        color[i] = -1;
-    int pos = 0;
-    return colorGraph(G, color, pos, 1);
-}
-int main()
-{
-    int G[][V] = {{0, 1, 0, 1},
-                  {1, 0, 1, 0},
-                  {0, 1, 0, 1},
-                  {1, 0, 1, 0}};
-    isBipartite(G) ? cout << "Yes" : cout << "No";
-    return 0;
-}*/
-/*// Detect Negative cycle in a graph
-//same as Bellman Ford
+/*// Depth First Search
 #include <bits/stdc++.h>
 using namespace std;
-struct Edge
-{
-    int src, dest, weight;
-};
-struct Graph
-{
-    int V, E;
-    struct Edge *edge;
-};
-struct Graph *createGraph(int V, int E)
-{
-    struct Graph *graph = new Graph;
-    graph->V = V;
-    graph->E = E;
-    graph->edge = new Edge[graph->E];
-    return graph;
-}
-bool isNegCycleBellmanFord(struct Graph *graph,
-                           int src)
-{
-    int V = graph->V;
-    int E = graph->E;
-    int dist[V];
-    for (int i = 0; i < V; i++)
-        dist[i] = INT_MAX;
-    dist[src] = 0;
-    for (int i = 1; i <= V - 1; i++)
-    {
-        for (int j = 0; j < E; j++)
-        {
-            int u = graph->edge[j].src;
-            int v = graph->edge[j].dest;
-            int weight = graph->edge[j].weight;
-            if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
-                dist[v] = dist[u] + weight;
-        }
-    }
-    for (int i = 0; i < E; i++)
-    {
-        int u = graph->edge[i].src;
-        int v = graph->edge[i].dest;
-        int weight = graph->edge[i].weight;
-        if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
-            return true;
-    }
-    return false;
-}
-int main()
-{
-    int V = 5;
-    int E = 8;
-    struct Graph *graph = createGraph(V, E);
-    graph->edge[0].src = 0;
-    graph->edge[0].dest = 1;
-    graph->edge[0].weight = -1;
-    graph->edge[1].src = 0;
-    graph->edge[1].dest = 2;
-    graph->edge[1].weight = 4;
-    graph->edge[2].src = 1;
-    graph->edge[2].dest = 2;
-    graph->edge[2].weight = 3;
-    graph->edge[3].src = 1;
-    graph->edge[3].dest = 3;
-    graph->edge[3].weight = 2;
-    graph->edge[4].src = 1;
-    graph->edge[4].dest = 4;
-    graph->edge[4].weight = 2;
-    graph->edge[5].src = 3;
-    graph->edge[5].dest = 2;
-    graph->edge[5].weight = 5;
-    graph->edge[6].src = 3;
-    graph->edge[6].dest = 1;
-    graph->edge[6].weight = 1;
-    graph->edge[7].src = 4;
-    graph->edge[7].dest = 3;
-    graph->edge[7].weight = -3;
-    if (isNegCycleBellmanFord(graph, 0))
-        cout << "Yes";
-    else
-        cout << "No";
-    return 0;
-}*/
-/*// Longest path in a Directed Acyclic Graph
-#include <bits/stdc++.h>
-#define NINF INT_MIN
-using namespace std;
-class AdjListNode
-{
-    int v;
-    int weight;
-public:
-    AdjListNode(int _v, int _w)
-    {
-        v = _v;
-        weight = _w;
-    }
-    int getV() { return v; }
-    int getWeight() { return weight; }
-};
-class Graph
-{
-    int V;
-    list<AdjListNode> *adj;
-    void topologicalSortUtil(int v, bool visited[],
-                             stack<int> &Stack);
-public:
-    Graph(int V);
-    ~Graph();
-    void addEdge(int u, int v, int weight);
-    void longestPath(int s);
-};
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<AdjListNode>[V];
-}
-Graph::~Graph()
-{
-    delete[] adj;
-}
-void Graph::addEdge(int u, int v, int weight)
-{
-    AdjListNode node(v, weight);
-    adj[u].push_back(node);
-}
-void Graph::topologicalSortUtil(int v, bool visited[],
-                                stack<int> &Stack)
-{
-    visited[v] = true;
-    list<AdjListNode>::iterator i;
-    for (i = adj[v].begin(); i != adj[v].end(); ++i)
-    {
-        AdjListNode node = *i;
-        if (!visited[node.getV()])
-            topologicalSortUtil(node.getV(), visited, Stack);
-    }
-    Stack.push(v);
-}
-void Graph::longestPath(int s)
-{
-    stack<int> Stack;
-    int dist[V];
-    bool *visited = new bool[V];
-    for (int i = 0; i < V; i++)
-        visited[i] = false;
-    for (int i = 0; i < V; i++)
-        if (visited[i] == false)
-            topologicalSortUtil(i, visited, Stack);
-    for (int i = 0; i < V; i++)
-        dist[i] = NINF;
-    dist[s] = 0;
-    while (Stack.empty() == false)
-    {
-        int u = Stack.top();
-        Stack.pop();
-        list<AdjListNode>::iterator i;
-        if (dist[u] != NINF)
-        {
-            for (i = adj[u].begin(); i != adj[u].end(); ++i)
-            {
-                if (dist[i->getV()] < dist[u] + i->getWeight())
-                    dist[i->getV()] = dist[u] + i->getWeight();
+class Solution {
+  private: 
+    void dfs(int node, vector<int> adj[], int vis[], vector<int> &ls) {
+        vis[node] = 1; 
+        ls.push_back(node);
+        for(auto it : adj[node]) {
+            if(!vis[it]) {
+                dfs(it, adj, vis, ls); 
             }
         }
     }
-    for (int i = 0; i < V; i++)
-        (dist[i] == NINF) ? cout << "INF " : cout << dist[i] << " ";
-    delete[] visited;
+  public:
+    vector<int> dfsOfGraph(int V, vector<int> adj[]) {
+        int vis[V] = {0}; 
+        int start = 0;
+        vector<int> ls; // create a list to store dfs
+        dfs(start, adj, vis, ls); // call dfs for starting node
+        return ls; 
+    }
+};
+void addEdge(vector <int> adj[], int u, int v) {
+    adj[u].push_back(v);
+    adj[v].push_back(u);
 }
-int main()
-{
-    Graph g(6);
-    g.addEdge(0, 1, 5);
-    g.addEdge(0, 2, 3);
-    g.addEdge(1, 3, 6);
-    g.addEdge(1, 2, 2);
-    g.addEdge(2, 4, 4);
-    g.addEdge(2, 5, 2);
-    g.addEdge(2, 3, 7);
-    g.addEdge(3, 5, 1);
-    g.addEdge(3, 4, -1);
-    g.addEdge(4, 5, -2);
-    int s = 1;
-    cout << "Following are longest distances from "
-            "source vertex "
-         << s << " \n";
-    g.longestPath(s);
+void printAns(vector <int> &ans) {
+    for (int i = 0; i < ans.size(); i++) {
+        cout << ans[i] << " ";
+    }
+}
+int main() {
+    vector <int> adj[5];
+    addEdge(adj, 0, 2);
+    addEdge(adj, 2, 4);
+    addEdge(adj, 0, 1);
+    addEdge(adj, 0, 3);
+    Solution obj;
+    vector <int> ans = obj.dfsOfGraph(5, adj);
+    printAns(ans);
     return 0;
 }*/
-// Journey to the Moon
-// Cheapest Flights Within K Stops
-// Oliver and the Game
-/*// Water Jug problem using BFS
+// Problems on BFS/DFS
+/*// Number of Provinces
+// Time Complexity: O(N) + O(V+2E)
 #include <bits/stdc++.h>
-#define pii pair<int, int>
-#define mp make_pair
 using namespace std;
-void BFS(int a, int b, int target)
+class Solution {
+  private:
+    void dfs(int node, vector<int> adjLs[], int vis[]) {
+        vis[node] = 1; 
+        for(auto it: adjLs[node]) {
+            if(!vis[it]) {
+                dfs(it, adjLs, vis); 
+            }
+        }
+    }
+  public:
+    int numProvinces(vector<vector<int>> adj, int V) {
+        vector<int> adjLs[V];
+        for(int i = 0;i<V;i++) {
+            for(int j = 0;j<V;j++) {
+                if(adj[i][j] == 1 && i != j) {
+                    adjLs[i].push_back(j); 
+                    adjLs[j].push_back(i); 
+                }
+            }
+        }
+        int vis[V] = {0}; 
+        int cnt = 0; 
+        for(int i = 0;i<V;i++) {
+            if(!vis[i]) {
+                cnt++;
+               dfs(i, adjLs, vis); 
+            }
+        }
+        return cnt; 
+    }
+};
+int main() { 
+    vector<vector<int>> adj{
+        {1, 0, 1},
+        {0, 1, 0},
+        {1, 0, 1}
+    };   
+    Solution ob;
+    cout << ob.numProvinces(adj,3) << endl;
+    return 0;
+}*/
+/*// Number of connected components
+#define maxRow 500
+#define maxCol 500
+bool visited[maxRow][maxCol] = { 0 };
+bool isSafe(string M[], int row, int col, char c,int n, int l){
+    return (row >= 0 && row < n)
+           && (col >= 0 && col < l)
+           && (M[row][col] == c && !visited[row][col]);
+}
+// Function for depth first search
+void DFS(string M[], int row, int col, char c,int n, int l){
+    int colNbr[] = { 0, 0, 1, -1 };
+    visited[row][col] = true;
+    for (int k = 0; k < 4; ++k)
+        if (isSafe(M, row + rowNbr[k],
+                  col + colNbr[k], c, n, l))
+ 
+            DFS(M, row + rowNbr[k],
+                col + colNbr[k], c, n, l);
+}
+int connectedComponents(string M[], int n){
+    int connectedComp = 0;
+    int l = M[0].length();
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < l; j++) {
+            if (!visited[i][j]) {
+                char c = M[i][j];
+                DFS(M, i, j, c, n, l);
+                connectedComp++;
+            }
+        }
+    }
+    return connectedComp;
+}*/
+/*// Rotten Oranges
+int orangesRotting(vector<vector<int>>& grid) {
+    if(grid.empty()) return 0;
+    int m = grid.size(), n = grid[0].size(), days = 0, tot = 0, cnt = 0;
+    queue<pair<int, int>> rotten;
+    for(int i = 0; i < m; ++i){
+        for(int j = 0; j < n; ++j){
+            if(grid[i][j] != 0) tot++;
+            if(grid[i][j] == 2) rotten.push({i, j});
+        }
+    }
+    int dx[4] = {0, 0, 1, -1};
+    int dy[4] = {1, -1, 0, 0};
+    while(!rotten.empty()){
+        int k = rotten.size();
+        cnt += k; 
+        while(k--){
+            int x = rotten.front().first, y = rotten.front().second;
+            rotten.pop();
+            for(int i = 0; i < 4; ++i){
+                int nx = x + dx[i], ny = y + dy[i];
+                if(nx < 0 || ny < 0 || nx >= m || ny >= n || grid[nx][ny] != 1) continue;
+                grid[nx][ny] = 2;
+                rotten.push({nx, ny});
+            }
+        }
+        if(!rotten.empty()) days++;
+    }
+    return tot == cnt ? days : -1;
+}*/
+/*// flood fill algo
+void dfs(int row, int col, vector<vector<int>>&ans,
+    vector<vector<int>>& image, int newColor, int delRow[], int delCol[],
+    int iniColor) {
+    ans[row][col] = newColor; 
+    int n = image.size();
+    int m = image[0].size(); 
+    for(int i = 0;i<4;i++) {
+        int nrow = row + delRow[i]; 
+        int ncol = col + delCol[i]; 
+        if(nrow>=0 && nrow<n && ncol>=0 && ncol < m && 
+        image[nrow][ncol] == iniColor && ans[nrow][ncol] != newColor) {
+            dfs(nrow, ncol, ans, image, newColor, delRow, delCol, iniColor); 
+        }
+    }
+}
+vector<vector<int>> floodFill(vector<vector<int>>& image, 
+int sr, int sc, int newColor) {
+    int iniColor = image[sr][sc]; 
+    vector<vector<int>> ans = image; 
+    int delRow[] = {-1, 0, +1, 0};
+    int delCol[] = {0, +1, 0, -1}; 
+    dfs(sr, sc, ans, image, newColor, delRow, delCol, iniColor); 
+    return ans; 
+}*/
+/*// Detect cycle in an undirected graph(using BFS)
+bool detect(int src, vector<int> adj[], int vis[]) {
+    vis[src] = 1; 
+    queue<pair<int,int>> q; // store <source node, parent node>
+    q.push({src, -1}); 
+    while(!q.empty()) {
+        int node = q.front().first; 
+        int parent = q.front().second; 
+        q.pop(); 
+        for(auto adjacentNode: adj[node]) {
+            if(!vis[adjacentNode]) {
+                vis[adjacentNode] = 1; 
+                q.push({adjacentNode, node}); 
+            }
+            else if(parent != adjacentNode) {
+                return true; 
+            }
+        }
+    }
+    return false; 
+}]
+bool isCycle(int V, vector<int> adj[]) {
+    int vis[V] = {0};
+    for(int i = 0;i<V;i++) {
+        if(!vis[i]) {
+            if(detect(i, adj, vis)) return true; 
+        }
+    }
+    return false; 
+}*/
+/*// Detect Cycle in an Undirected Graph(using DFS)
+bool dfs(int node, int parent, int vis[], vector<int> adj[]) {
+    vis[node] = 1;
+    for(auto adjacentNode: adj[node]) {
+        if(!vis[adjacentNode]) {
+            if(dfs(adjacentNode, node, vis, adj) == true) 
+                return true; 
+        }
+        else if(adjacentNode != parent) return true; 
+    }
+    return false; 
+}
+bool isCycle(int V, vector<int> adj[]) {
+    int vis[V] = {0};
+    for(int i = 0;i<V;i++) {
+        if(!vis[i]) {
+            if(dfs(i, -1, vis, adj) == true) return true; 
+        }
+    }
+    return false; 
+}*/
+/*// Detect Cycle in a Directed Graph(using DFS)
+bool dfsCheck(int node, vector<int> adj[], int vis[], int pathVis[]) {
+    vis[node] = 1;
+    pathVis[node] = 1;
+    for (auto it : adj[node]) {
+        if (!vis[it]) {
+            if (dfsCheck(it, adj, vis, pathVis) == true)
+                return true;
+        }
+        else if (pathVis[it]) {
+            return true;
+        }
+    }
+    pathVis[node] = 0;
+    return false;
+}
+bool isCyclic(int V, vector<int> adj[]) {
+    int vis[V] = {0};
+    int pathVis[V] = {0};
+    for (int i = 0; i < V; i++) {
+        if (!vis[i]) {
+            if (dfsCheck(i, adj, vis, pathVis) == true) return true;
+        }
+    }
+    return false;
+}*/
+/*// 01 Matrix
+vector<vector<int>> updateMatrix(vector<vector<int>> &mat){
+    int n = mat.size();
+    int m = mat[0].size();
+    int INF = m + n;
+    for (int r = 0; r < n; r++){
+        for (int c = 0; c < m; c++){
+            int top = INF, left = INF;
+            if (mat[r][c] == 0)
+                continue;
+            if (r >= 1)
+                top = mat[r - 1][c];
+            if (c >= 1)
+                left = mat[r][c - 1];
+            mat[r][c] = min(top, left) + 1;
+        }
+    }
+    for (int r = n - 1; r >= 0; r--){
+        for (int c = m - 1; c >= 0; c--){
+            int bottom = INF, right = INF;
+            if (mat[r][c] == 0)
+                continue;
+            if (r < n - 1)
+                bottom = mat[r + 1][c];
+            if (c < m - 1)
+                right = mat[r][c + 1];
+            mat[r][c] = min(mat[r][c], min(bottom, right) + 1);
+        }
+    }
+    return mat;
+}*/
+/*// Surrounded Regions
+void solve(vector<vector<char>>& board) {
+    if(board.empty()) return;
+    int row = board.size(),col = board[0].size();
+    for(int i=0;i<col;i++)DFS(board,0,i,row,col),DFS(board,row-1,i,row,col);
+    for(int i=0;i<row;i++)DFS(board,i,0,row,col),DFS(board,i,col-1,row,col); 
+    for(int i=0;i<row;i++)
+        for(int j=0;j<col;j++)
+            if(board[i][j]=='O')board[i][j]='X';
+            else if(board[i][j]=='P')board[i][j]='O';
+}
+void DFS(vector<vector<char>>& board,int r,int c,int rsize,int csize){
+    if(r<0||c<0||r==rsize||c==csize||board[r][c]!='O')return;
+    board[r][c] = 'P';
+    int dx[4] = { -1, 0, 1, 0},dy[4] = {0, -1, 0, 1};
+    for (int k = 0; k < 4; k++) { 
+        int newx = c + dx[k], newy = r + dy[k];
+        DFS(board, newy, newx, rsize, csize);
+    }
+}*/
+/*// Number of Enclaves
+void dfs(vector<vector<int>> &A, int i, int j){
+    if (i < 0 || i >= A.size() || j < 0 || j >= A[0].size() || A[i][j] == 0)
+        return;
+    A[i][j] = 0;
+    int dy[4] = {0, -1, 0, 1};
+    int dx[4] = { -1, 0, 1, 0};
+    for (int k = 0; k < 4; k++) {
+    int newy = i + dy[k];
+    int newx = j + dx[k];
+    dfs(A, newy, newx);}
+}
+int numEnclaves(vector<vector<int>> &A){
+    for (int i = 0; i < A.size(); i++)
+        for (int j = 0; j < A[0].size(); j++)
+            if (i * j == 0 || i == A.size() - 1 || j == A[i].size() - 1)
+                dfs(A, i, j);
+    return accumulate(begin(A), end(A), 0, [](int s, vector<int> &r)
+                        { return s + accumulate(begin(r), end(r), 0); });
+}*/
+/*// Number of Isalnds
+void DFS(vector<vector<int>>& M, int i, int j, int ROW, int COL) {
+    if (i < 0 || j < 0 || i >= ROW || j >= COL || M[i][j] != 1)
+        return;
+    M[i][j] = 0;
+    int dy[4] = {0, -1, 0, 1};
+    int dx[4] = {-1, 0, 1, 0};
+    for (int k = 0; k < 4; k++) {
+        int newy = i + dy[k];
+        int newx = j + dx[k];
+        DFS(M, newy, newx, ROW, COL);
+    }
+}
+int countIslands(vector<vector<int>>& M) {
+    int ROW = M.size();
+    int COL = M[0].size();
+    int count = 0;
+    for (int i = 0; i < ROW; i++) {
+        for (int j = 0; j < COL; j++) {
+            if (M[i][j] == 1) {
+                count++;
+                DFS(M, i, j, ROW, COL);
+            }
+        }
+    }
+    return count;
+}*/
+/*// Is graph Bipartite
+bool isBipartite(vector<vector<int>> &graph){
+    int n = graph.size();
+    vector<int> color(n);
+    queue<int> q;
+    for (int i = 0; i < n; i++){
+        if (color[i])
+            continue;
+        color[i] = 1;
+        for (q.push(i); !q.empty(); q.pop()){
+            int cur = q.front();
+            for (int neighbor : graph[cur]){
+                if (!color[neighbor]){
+                    color[neighbor] = -color[cur];
+                    q.push(neighbor);
+                }
+                else if (color[neighbor] == color[cur])
+                    return false;
+            }
+        }
+    }
+    return true;
+}*/
+// Topo Sort and Problems
+/*// Topological Sort
+// Time Complexity: O(V+E)+O(V)
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+private:
+	void dfs(int node, int vis[], stack<int> &st,
+	         vector<int> adj[]) {
+		vis[node] = 1;
+		for (auto it : adj[node]) {
+			if (!vis[it]) dfs(it, vis, st, adj);
+		}
+		st.push(node);
+	}
+public:
+	vector<int> topoSort(int V, vector<int> adj[]){
+		int vis[V] = {0};
+		stack<int> st;
+		for (int i = 0; i < V; i++) {
+			if (!vis[i]) {
+				dfs(i, vis, st, adj);
+			}
+		}
+		vector<int> ans;
+		while (!st.empty()) {
+			ans.push_back(st.top());
+			st.pop();
+		}
+		return ans;
+	}
+};
+int main() {
+	//V = 6;
+	vector<int> adj[6] = {{}, {}, {3}, {1}, {0, 1}, {0, 2}};
+	int V = 6;
+	Solution obj;
+	vector<int> ans = obj.topoSort(V, adj);
+	for (auto node : ans) {
+		cout << node << " ";
+	}
+	cout << endl;
+	return 0;
+}*/
+/*// kahn's algo
+vector<int> topoSort(int V, vector<int> adj[]){
+    int indegree[V] = {0};
+    for (int i = 0; i < V; i++) {
+        for (auto it : adj[i]) {
+            indegree[it]++;
+        }
+    }
+    queue<int> q;
+    for (int i = 0; i < V; i++) {
+        if (indegree[i] == 0) {
+            q.push(i);
+        }
+    }
+    vector<int> topo;
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        topo.push_back(node);
+        for (auto it : adj[node]) {
+            indegree[it]--;
+            if (indegree[it] == 0) q.push(it);
+        }
+    }
+    return topo;
+}*/
+/*// Course Schedule
+bool iscycle(vector<int> adj[], vector<int> &vis, int id){
+    if (vis[id] == 1)
+        return true;
+    if (vis[id] == 0){
+        vis[id] = 1;
+        for (auto edge: adj[id]){
+            if (iscycle(adj, vis, edge))
+                return true;
+        }
+    }
+    vis[id] = 2;
+    return false;
+}
+bool canFinish(int n, vector<vector < int>> &pre){
+    vector<int> adj[n];
+    for (auto edge: pre)
+        adj[edge[1]].push_back(edge[0]);
+    vector<int> vis(n, 0);
+    for (int i = 0; i < n; i++){
+        if (iscycle(adj, vis, i))
+            return false;
+    }
+    return true;
+}*/
+/*// Find Eventual Safe States
+bool dfs(vector<vector < int>> &graph, vector< int > &color, int node){
+    color[node] = 1;
+    for (auto cur: graph[node])
+        if ((color[cur] == 0 && dfs(graph, color, cur)) || color[cur] == 1)
+            return true;
+    color[node] = 2;
+    return false;
+}
+vector<int> eventualSafeNodes(vector<vector < int>> &graph){
+    vector<int> color(graph.size()), result;
+    for (int i = 0; i < graph.size(); i++)
+        if (color[i] == 2 || !dfs(graph, color, i))
+            result.push_back(i);
+    return result;
+}*/
+/*// Alien Dictionary
+https://takeuforward.org/data-structure/alien-dictionary-topological-sort-g-26/*/
+// Shortest Path Algorithms and Problems :
+// Dijkstra's algorithm why we use priority_queue instead of queue cause priority queue is O((E+V)logV) and queue would be O(EV).
+// Bellman-Ford is used for graphs with negative edge weights, while Floyd-Warshall is used for graphs without negative edge weights. 
+// Bellman-Ford is a single-source algorithm, meaning it computes the shortest path from a single source, while Floyd-Warshall computes the shortest distances between every pair of vertices in the input graph. 
+// To summarize, we use Floyd-Warshall for all pairs shortest path, Dijkstra for single source shortest path with non-negative weights, and Bellman-Ford for single source shortest path with negative weights and negative cycles. 
+// In the Floyd-Warshall algorithm, the diagonal elements of the distance matrix are set to 0 because they represent the distance from a vertex to itself, which is always 0.
+/*// Shortest Path in Undirected Graph with unit distance
+https://takeuforward.org/data-structure/shortest-path-in-undirected-graph-with-unit-distance-g-28/*/
+/*// Shortest Path in Directed Acyclic Graph
+https://takeuforward.org/data-structure/shortest-path-in-directed-acyclic-graph-topological-sort-g-27/*/
+/*// Dijkstra’s Algorithm
+https://takeuforward.org/data-structure/dijkstras-algorithm-using-priority-queue-g-32/ (using priority queue)
+https://takeuforward.org/data-structure/dijkstras-algorithm-using-set-g-33/*/
+/*// Bellman Ford Algorithm
+https://takeuforward.org/data-structure/bellman-ford-algorithm-g-41/*/
+/*// Floyd Warshall Algorithm
+https://takeuforward.org/data-structure/floyd-warshall-algorithm-g-42/*/
+/*// Shortest Path in Binary Matrix
+int shortestPathBinaryMatrix(vector<vector<int>> &grid)
 {
-    map<pii, int> m;
-    bool isSolvable = false;
-    vector<pii> path;
-    queue<pii> q;
+    int n = grid.size();
+    if (grid[0][0] == 1 || grid[n - 1][n - 1] == 1)
+        return -1;
+    if (n == 1)
+        return 1;
+    queue<pair<int, int>> q;
+    int dir[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+    int dist = 0;
     q.push({0, 0});
+    grid[0][0] = 1;
     while (!q.empty())
     {
-        pii u = q.front();
-        q.pop();
-        if (m[{u.first, u.second}] == 1)
-            continue;
-        if ((u.first > a || u.second > b ||
-             u.first < 0 || u.second < 0))
-            continue;
-        path.push_back({u.first, u.second});
-        m[{u.first, u.second}] = 1;
-        if (u.first == target || u.second == target)
+        int size = q.size();
+        dist++;
+        while (size--)
         {
-            isSolvable = true;
-            if (u.first == target)
+            auto front = q.front();
+            q.pop();
+            for (auto d : dir)
             {
-                if (u.second != 0)
-                    path.push_back({u.first, 0});
-            }
-            else
-            {
-                if (u.first != 0)
-                    path.push_back({0, u.second});
-            }
-            int sz = path.size();
-            for (int i = 0; i < sz; i++)
-                cout << "(" << path[i].first
-                     << ", " << path[i].second << ")";
-            break;
-        }
-        q.push({u.first, b});
-        q.push({a, u.second});
-        for (int ap = 0; ap <= max(a, b); ap++)
-        {
-            int c = u.first + ap;
-            int d = u.second - ap;
-            if (c == a || (d == 0 && d >= 0))
-                q.push({c, d});
-            c = u.first - ap;
-            d = u.second + ap;
-            if ((c == 0 && c >= 0) || d == b)
-                q.push({c, d});
-        }
-        q.push({a, 0});
-        q.push({0, b});
-    }
-    if (!isSolvable)
-        cout << "No solution";
-}
-int main()
-{
-    int Jug1 = 4, Jug2 = 3, target = 2;
-    cout << "Path from initial state "
-            "to solution state : ";
-    BFS(Jug1, Jug2, target);
-    return 0;
-}*/
-/*// Find if there is a path of more thank length from a source
-#include <bits/stdc++.h>
-using namespace std;
-typedef pair<int, int> iPair;
-class Graph
-{
-    int V;
-    list<pair<int, int>> *adj;
-    bool pathMoreThanKUtil(int src, int k, vector<bool> &path);
-public:
-    Graph(int V);
-    void addEdge(int u, int v, int w);
-    bool pathMoreThanK(int src, int k);
-};
-bool Graph::pathMoreThanK(int src, int k)
-{
-    vector<bool> path(V, false);
-    path[src] = 1;
-    return pathMoreThanKUtil(src, k, path);
-}
-bool Graph::pathMoreThanKUtil(int src, int k, vector<bool> &path)
-{
-    if (k <= 0)
-        return true;
-    list<iPair>::iterator i;
-    for (i = adj[src].begin(); i != adj[src].end(); ++i)
-    {
-        int v = (*i).first;
-        int w = (*i).second;
-        if (path[v] == true)
-            continue;
-        if (w >= k)
-            return true;
-        path[v] = true;
-        if (pathMoreThanKUtil(v, k - w, path))
-            return true;
-        path[v] = false;
-    }
-    return false;
-}
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<iPair>[V];
-}
-void Graph::addEdge(int u, int v, int w)
-{
-    adj[u].push_back(make_pair(v, w));
-    adj[v].push_back(make_pair(u, w));
-}
-int main()
-{
-    int V = 9;
-    Graph g(V);
-    g.addEdge(0, 1, 4);
-    g.addEdge(0, 7, 8);
-    g.addEdge(1, 2, 8);
-    g.addEdge(1, 7, 11);
-    g.addEdge(2, 3, 7);
-    g.addEdge(2, 8, 2);
-    g.addEdge(2, 5, 4);
-    g.addEdge(3, 4, 9);
-    g.addEdge(3, 5, 14);
-    g.addEdge(4, 5, 10);
-    g.addEdge(5, 6, 2);
-    g.addEdge(6, 7, 1);
-    g.addEdge(6, 8, 6);
-    g.addEdge(7, 8, 7);
-    int src = 0;
-    int k = 62;
-    g.pathMoreThanK(src, k) ? cout << "Yes\n" : cout << "No\n";
-    k = 60;
-    g.pathMoreThanK(src, k) ? cout << "Yes\n" : cout << "No\n";
-    return 0;
-}*/
-/*// M-ColouringProblem
-#include <iostream>
-using namespace std;
-#define V 4
-void printSolution(int color[]);
-bool isSafe(int v, bool graph[V][V],
-            int color[], int c)
-{
-    for (int i = 0; i < V; i++)
-        if (graph[v][i] && c == color[i])
-            return false;
-    return true;
-}
-bool graphColoringUtil(bool graph[V][V], int m,
-                       int color[], int v)
-{
-    if (v == V)
-        return true;
-    for (int c = 1; c <= m; c++)
-    {
-        if (isSafe(v, graph, color, c))
-        {
-            color[v] = c;
-            if (graphColoringUtil(
-                    graph, m, color, v + 1) == true)
-                return true;
-            color[v] = 0;
-        }
-    }
-    return false;
-}
-bool graphColoring(bool graph[V][V], int m)
-{
-    int color[V];
-    for (int i = 0; i < V; i++)
-        color[i] = 0;
-    if (graphColoringUtil(graph, m, color, 0) == false)
-    {
-        cout << "Solution does not exist";
-        return false;
-    }
-    printSolution(color);
-    return true;
-}
-void printSolution(int color[])
-{
-    cout << "Solution Exists:"
-         << " Following are the assigned colors"
-         << "\n";
-    for (int i = 0; i < V; i++)
-        cout << " " << color[i] << " ";
-    cout << "\n";
-}
-int main()
-{
-    bool graph[V][V] = {
-        {0, 1, 1, 1},
-        {1, 0, 1, 0},
-        {1, 1, 0, 1},
-        {1, 0, 1, 0},
-    };
-    int m = 3;
-    graphColoring(graph, m);
-    return 0;
-}*/
-/*// Minimum edges to reverse o make path from source to destination
-#include <bits/stdc++.h>
-using namespace std;
-#define INF 0x3f3f3f3f
-class Graph
-{
-    int V;
-    list< pair > *adj;
-public:
-    Graph(int V);
-    void addEdge(int u, int v, int w);
-    vector shortestPath(int s);
-};
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<pair>[V];
-}
-void Graph::addEdge(int u, int v, int w)
-{
-    adj[u].push_back(make_pair(v, w));
-}
-vector Graph::shortestPath(int src)
-{
-    set<pair> setds;
-    vector dist(V, INF);
-    setds.insert(make_pair(0, src));
-    dist[src] = 0;
-    while (!setds.empty())
-    {
-        pair tmp = *(setds.begin());
-        setds.erase(setds.begin());
-        int u = tmp.second;
-        list<pair>::iterator i;
-        for (i = adj[u].begin(); i != adj[u].end(); ++i)
-        {
-            int v = (*i).first;
-            int weight = (*i).second;
-            if (dist[v] > dist[u] + weight)
-            {
-                if (dist[v] != INF)
-                    setds.erase(setds.find(make_pair(dist[v], v)));
-                dist[v] = dist[u] + weight;
-                setds.insert(make_pair(dist[v], v));
+                int adI = front.first + d[0];
+                int adJ = front.second + d[1];
+                if (adI < 0 || adJ < 0 || adI >= n || adJ >= n)
+                    continue;
+                if (grid[adI][adJ] == 1)
+                    continue;
+                grid[adI][adJ] = 1;
+                if (adI == n - 1 && adJ == n - 1)
+                    return dist + 1;
+                q.push({adI, adJ});
             }
         }
     }
-    return dist;
-}
-Graph modelGraphWithEdgeWeight(int edge[][2], int E, int V)
-{
-    Graph g(V);
-    for (int i = 0; i < E; i++)
-    {
-        g.addEdge(edge[i][0], edge[i][1], 0);
-        g.addEdge(edge[i][1], edge[i][0], 1);
-    }
-    return g;
-}
-int getMinEdgeReversal(int edge[][2], int E, int V,
-                       int src, int dest)
-{
-    Graph g = modelGraphWithEdgeWeight(edge, E, V);
-    vector dist = g.shortestPath(src);
-    if (dist[dest] == INF)
-        return -1;
-    else
-        return dist[dest];
-}
-int main()
-{
-    int V = 7;
-    int edge[][2] = {{0, 1}, {2, 1}, {2, 3}, {5, 1}, {4, 5}, {6, 4}, {6, 3}};
-    int E = sizeof(edge) / sizeof(edge[0]);
-    int minEdgeToReverse =
-        getMinEdgeReversal(edge, E, V, 0, 6);
-    if (minEdgeToReverse != -1)
-        cout << minEdgeToReverse << endl;
-    else
-        cout << "Not possible" << endl;
-    return 0;
+    return -1;
 }*/
-/*// Paths to travel each nodes using each edge(Seven Bridges)
-#include <bits/stdc++.h>
-using namespace std;
-class Graph
-{
-    int V;
-    list<int> *adj;
-public:
-    Graph(int V)
-    {
-        this->V = V;
-        adj = new list<int>[V];
-    }
-    ~Graph()
-    {
-        delete[] adj;
-    }
-    void addEdge(int u, int v)
-    {
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-    void rmvEdge(int u, int v);
-    void printEulerTour();
-    void printEulerUtil(int s);
-    int DFSCount(int v, bool visited[]);
-    bool isValidNextEdge(int u, int v);
-};
-void Graph::printEulerTour()
-{
-    int u = 0;
-    for (int i = 0; i < V; i++)
-        if (adj[i].size() & 1)
-        {
-            u = i;
-            break;
-        }
-    // Print tour starting from oddv
-    printEulerUtil(u);
-    cout << endl;
-}
-void Graph::printEulerUtil(int u)
-{
-    list<int>::iterator i;
-    for (i = adj[u].begin(); i != adj[u].end(); ++i)
-    {
-        int v = *i;
-        if (v != -1 && isValidNextEdge(u, v))
-        {
-            cout << u << "-" << v << " ";
-            rmvEdge(u, v);
-            printEulerUtil(v);
-        }
-    }
-}
-bool Graph::isValidNextEdge(int u, int v)
-{
-    int count = 0;
-    list<int>::iterator i;
-    for (i = adj[u].begin(); i != adj[u].end(); ++i)
-        if (*i != -1)
-            count++;
-    if (count == 1)
-        return true;
-    bool visited[V];
-    memset(visited, false, V);
-    int count1 = DFSCount(u, visited);
-    rmvEdge(u, v);
-    memset(visited, false, V);
-    int count2 = DFSCount(u, visited);
-    addEdge(u, v);
-    return (count1 > count2) ? false : true;
-}
-void Graph::rmvEdge(int u, int v)
-{
-    list<int>::iterator iv = find(adj[u].begin(),
-                                  adj[u].end(), v);
-    *iv = -1;
-    list<int>::iterator iu = find(adj[v].begin(),
-                                  adj[v].end(), u);
-    *iu = -1;
-}
-int Graph::DFSCount(int v, bool visited[])
-{
-    visited[v] = true;
-    int count = 1;
-    list<int>::iterator i;
-    for (i = adj[v].begin(); i != adj[v].end(); ++i)
-        if (*i != -1 && !visited[*i])
-            count += DFSCount(*i, visited);
-    return count;
-}
-int main()
-{
-    Graph g1(4);
-    g1.addEdge(0, 1);
-    g1.addEdge(0, 2);
-    g1.addEdge(1, 2);
-    g1.addEdge(2, 3);
-    g1.printEulerTour();
-    Graph g3(4);
-    g3.addEdge(0, 1);
-    g3.addEdge(1, 0);
-    g3.addEdge(0, 2);
-    g3.addEdge(2, 0);
-    g3.addEdge(2, 3);
-    g3.addEdge(3, 1);
-    g3.printEulerTour();
-    return 0;
-}*/
-/*// Vertex Cover Problem
-#include <bits/stdc++.h>
-using namespace std;
-class Graph
-{
-    int V;
-    list<int> *adj;
-public:
-    Graph(int V);
-    void addEdge(int v, int w);
-    void printVertexCover();
-};
-Graph::Graph(int V)
-{
-    this->V = V;
-    adj = new list<int>[V];
-}
-void Graph::addEdge(int v, int w)
-{
-    adj[v].push_back(w);
-    adj[w].push_back(v);
-}
-void Graph::printVertexCover()
-{
-    bool visited[V];
-    for (int i = 0; i < V; i++)
-        visited[i] = false;
-    list<int>::iterator i;
-    for (int u = 0; u < V; u++)
-    {
-        if (visited[u] == false)
-        {
-            for (i = adj[u].begin(); i != adj[u].end(); ++i)
-            {
-                int v = *i;
-                if (visited[v] == false)
-                {
-                    visited[v] = true;
-                    visited[u] = true;
-                    break;
+/*// Path With Minimum Effort
+int minimumEffortPath(vector<vector<int>> &heights){
+    int M = heights.size(), N = heights[0].size();
+    vector<vector<int>> path(M, vector<int>(N, INT_MAX));
+    queue<pair<int, int>> Q;
+    Q.push({0, 0}); 
+    path[0][0] = 0;
+    int dir[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    while (!Q.empty()){
+        pair<int, int> curr = Q.front();
+        Q.pop();
+        int i = curr.first, j = curr.second;
+        for (auto d : dir){ 
+            int ri = i + d[0], rj = j + d[1];
+            if (ri >= 0 && ri < M && rj >= 0 && rj < N){
+                int diff = abs(heights[i][j] - heights[ri][rj]);
+                int maxval = max(path[i][j], diff);
+                if (maxval < path[ri][rj]){ 
+                    path[ri][rj] = maxval;
+                    Q.push({ri, rj});
                 }
             }
         }
     }
-    for (int i = 0; i < V; i++)
-    {
-        if (visited[i])
-            cout << i << " ";
-    }
-}
-int main()
-{
-    Graph g(7);
-    g.addEdge(0, 1);
-    g.addEdge(0, 2);
-    g.addEdge(1, 3);
-    g.addEdge(3, 4);
-    g.addEdge(4, 5);
-    g.addEdge(5, 6);
-    g.printVertexCover();
-    return 0;
+    return path[M - 1][N - 1];
 }*/
-/*// Chinese Postman or Route Inspection
-this is a variation of Eulerian circuit problem*/
-/*// Number of Triangles in a Directed and Undirected Graph
-#include <bits/stdc++.h>
-using namespace std;
-#define V 4
-int countTriangle(int graph[V][V], bool isDirected)
-{
-    int count_Triangle = 0;
-    for (int i = 0; i < V; i++)
-    {
-        for (int j = 0; j < V; j++)
-        {
-            for (int k = 0; k < V; k++)
-            {
-                if (graph[i][j] && graph[j][k] && graph[k][i])
-                    count_Triangle++;
-            }
-        }
+/*// Cheapest Flights Within K Stops
+int findCheapestPrice(int n, vector<vector<int>>& a, int src, int sink, int k) {    
+    vector<int> c(n, 1e8);
+    c[src] = 0;
+    for(int z=0; z<=k; z++){
+        vector<int> C(c);
+        for(auto e: a)
+            C[e[1]] = min(C[e[1]], c[e[0]] + e[2]);
+        c = C;
     }
-    isDirected ? count_Triangle /= 3:
-    count_Triangle /= 6;
-    return count_Triangle;
-}
-int main()
-{
-    int graph[][V] = {{0, 1, 1, 0},
-                      {1, 0, 1, 1},
-                      {1, 1, 0, 1},
-                      {0, 1, 1, 0}};
-    int digraph[][V] = {{0, 0, 1, 0},
-                        {1, 0, 0, 1},
-                        {0, 1, 0, 0},
-                        {0, 0, 1, 0}};
-    cout << "The Number of triangles in undirected graph : "
-         << countTriangle(graph, false);
-    cout << "\n\nThe Number of triangles in directed graph : "
-         << countTriangle(digraph, true);
-    return 0;
+    return c[sink] == 1e8 ? -1 : c[sink];
 }*/
-/*// Minimise the cashflow among a given set of friends who have borrowed money from each other
-Greedy 447*/
-/*// Two Clique Problem
-#include <bits/stdc++.h>
-using namespace std;
-const int V = 5;
-bool isBipartiteUtil(int G[][V], int src, int colorArr[])
-{
-    colorArr[src] = 1;
-    queue<int> q;
-    q.push(src);
-    while (!q.empty())
-    {
-        int u = q.front();
+/*// Minimum Multiplications to Reach End
+int minimumMultiplications(vector<int> &arr,int start, int end){
+    queue<pair<int, int>> q;
+    q.push({start, 0});
+    vector<int> dist(100000, 1e9);
+    dist[start] = 0;
+    int mod = 100000;
+    while (!q.empty()){
+        int node = q.front().first;
+        int steps = q.front().second;
         q.pop();
-        for (int v = 0; v < V; ++v)
-        {
-            if (G[u][v] && colorArr[v] == -1)
-            {
-                colorArr[v] = 1 - colorArr[u];
-                q.push(v);
+        for (auto it : arr){
+            int num = (it * node) % mod;
+            if (steps + 1 < dist[num]){
+                dist[num] = steps + 1;
+                if (num == end)
+                    return steps + 1;
+                q.push({num, steps + 1});
             }
-            else if (G[u][v] && colorArr[v] == colorArr[u])
-                return false;
         }
     }
-    return true;
-}
-bool isBipartite(int G[][V])
-{
-    int colorArr[V];
-    for (int i = 0; i < V; ++i)
-        colorArr[i] = -1;
-    for (int i = 0; i < V; i++)
-        if (colorArr[i] == -1)
-            if (isBipartiteUtil(G, i, colorArr) == false)
-                return false;
-    return true;
-}
-bool canBeDividedinTwoCliques(int G[][V])
-{
-    int GC[V][V];
-    for (int i = 0; i < V; i++)
-        for (int j = 0; j < V; j++)
-            GC[i][j] = (i != j) ? !G[i][j] : 0;
-    return isBipartite(GC);
-}
-int main()
-{
-    int G[][V] = {{0, 1, 1, 1, 0},
-                  {1, 0, 1, 0, 0},
-                  {1, 1, 0, 0, 0},
-                  {0, 1, 0, 0, 1},
-                  {0, 0, 0, 1, 0}};
-    canBeDividedinTwoCliques(G) ? cout << "Yes" : cout << "No";
-    return 0;
+    return -1;
 }*/
-/*// Tarjan's Algorithm for SCC
+/*// Find the City With the Smallest Number of Neighbors at a Threshold Distance
+int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+    int dist[n][n];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            dist[i][j] = i == j ? 0 : 10001;
+        }
+    }
+    for (auto &e : edges) {
+        dist[e[0]][e[1]] = dist[e[1]][e[0]] = e[2];
+    }
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+            }
+        }
+    }
+    int res = -1, resCount = INT_MAX;
+    for (int i = 0; i < n; i++) {
+        int count = 0;
+        for (int j = 0; j < n; j++) {
+            if (dist[i][j] <= distanceThreshold) {
+                count++;
+            }
+        }
+        if (count <= resCount) {
+            resCount = count;
+            res = i;
+        }
+    }
+    return res;
+}*/
+// Minimum Spanning Tree / Disjoint Set and Problems
+/*// Prim's Algorithm
+https://takeuforward.org/data-structure/prims-algorithm-minimum-spanning-tree-c-and-java-g-45/*/
+/*// Kruskal's Algorithm
+https://takeuforward.org/data-structure/kruskals-algorithm-minimum-spanning-tree-g-47/*/
+/*// Disjoint Set Union by Rank and by Size
+https://takeuforward.org/data-structure/disjoint-set-union-by-rank-union-by-size-path-compression-g-46/*/
+/*// Number of Operations to Make Network Connected
+void dfs(vector<vector<int>> &adj,vector<bool> &visited,int n){
+    visited[n]=true;
+    for(auto i:adj[n])
+        if(!visited[i])
+            dfs(adj,visited,i);
+}
+int makeConnected(int n, vector<vector<int>>& a) {
+    if(a.size()<n-1) return -1;
+    vector<vector<int>> adj(n);
+    for(auto v:a){
+        adj[v[0]].push_back(v[1]);
+        adj[v[1]].push_back(v[0]);
+    }
+    vector<bool> visited(n,false);
+    int cnt=0;
+    for(int i=0;i<n;i++){
+        if(!visited[i]){
+            dfs(adj,visited,i);
+            cnt++;
+        }
+    }
+    return cnt-1;
+}*/
+/*// Most Stones Removed with Same Row or Column
+int dfs(vector<vector<int>> &stones, int index, vector<bool> &visited, int &n){
+    visited[index] = true;
+    int result = 0;
+    for (int i = 0; i < n; i++)
+        if (!visited[i] && (stones[i][0] == stones[index][0] || stones[i][1] == stones[index][1]))
+            result += (dfs(stones, i, visited, n) + 1);
+    return result;
+}
+int removeStones(vector<vector<int>> &stones){
+    int n = stones.size();
+    vector<bool> visited(n, 0);
+    int result = 0;
+    for (int i = 0; i < n; i++){
+        if (visited[i]){
+            continue;
+        }
+        result += dfs(stones, i, visited, n);
+    }
+    return result;
+}*/
+/*// Accounts Merge
+https://takeuforward.org/data-structure/accounts-merge-dsu-g-50/*/
+/*// Number of Islands – II – Online Queries
+https://takeuforward.org/graph/number-of-islands-ii-online-queries-dsu-g-51/*/
+/*// Making a Large Island
+https://takeuforward.org/data-structure/making-a-large-island-dsu-g-52/*/
+/*// Kosaraju’s Algorithm(Strongly Connected Components)
+https://takeuforward.org/graph/strongly-connected-components-kosarajus-algorithm-g-54/*/
+/*// Tarjan’s Algorithm (Bridges in Graph)
+https://takeuforward.org/graph/bridges-in-graph-using-tarjans-algorithm-of-time-in-and-low-time-g-55/*/
+/*// Articulation Point
+https://takeuforward.org/data-structure/articulation-point-in-graph-g-56/*/
+
+//TIME COMPLEXITY: O(V+E)
 #include<bits/stdc++.h>
 using namespace std;
 #define V 7
@@ -2499,5 +862,4 @@ int main()
     adj[6].pb(5);
     findSCCs_Tarjan();
     return 0;
-}
-//TIME COMPLEXITY: O(V+E)*/
+}*/
